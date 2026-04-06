@@ -235,7 +235,6 @@ html,body{height:100%;width:100%;background:var(--bg);font-family:'Nunito',sans-
       <div class="word-card">
         <div class="wc-hebrew" id="wHebrew"></div>
         <div class="wc-english" id="wEnglish"></div>
-        <div class="wc-pronun" id="wPronun"></div>
         <div class="wc-example" id="wExample"></div>
       </div>
 
@@ -273,7 +272,6 @@ html,body{height:100%;width:100%;background:var(--bg);font-family:'Nunito',sans-
       <div class="q-card">
         <div class="q-prompt">קרא את המילה הזאת באנגלית:</div>
         <div class="q-hebrew" id="qHebrew"></div>
-        <div class="q-hint" id="qHint"></div>
       </div>
 
       <!-- Mode toggle: speak or tap -->
@@ -348,178 +346,178 @@ const USERS=[
 const LESSONS={
   beginner:[
     {id:'greetings',he:'ברכות',en:'Greetings',emoji:'👋',words:[
-      {e:'Hello',h:'שלום',p:'Ha-LO',x:'Hello! Nice to meet you.'},
-      {e:'Good morning',h:'בוקר טוב',p:'Good MOR-ning',x:'Good morning! How are you?'},
-      {e:'Good night',h:'לילה טוב',p:'Good NITE',x:'Good night, sleep well.'},
-      {e:'Goodbye',h:'להתראות',p:'Good-BYE',x:'Goodbye, see you tomorrow!'},
-      {e:'Thank you',h:'תודה',p:'THANK-you',x:'Thank you very much!'},
-      {e:'Please',h:'בבקשה',p:'PLEEZ',x:'Can I have water, please?'},
-      {e:'Yes',h:'כן',p:'YES',x:'Yes, I understand.'},
-      {e:'No',h:'לא',p:'NO',x:'No, thank you.'},
+      {e:'Hello',h:'שלום',x:'Hello! Nice to meet you.'},
+      {e:'Good morning',h:'בוקר טוב',x:'Good morning! How are you?'},
+      {e:'Good night',h:'לילה טוב',x:'Good night, sleep well.'},
+      {e:'Goodbye',h:'להתראות',x:'Goodbye, see you tomorrow!'},
+      {e:'Thank you',h:'תודה',x:'Thank you very much!'},
+      {e:'Please',h:'בבקשה',x:'Can I have water, please?'},
+      {e:'Yes',h:'כן',x:'Yes, I understand.'},
+      {e:'No',h:'לא',x:'No, thank you.'},
     ]},
     {id:'numbers',he:'מספרים',en:'Numbers',emoji:'🔢',words:[
-      {e:'One',h:'אחד',p:'WUN',x:'One coffee, please.'},
-      {e:'Two',h:'שניים',p:'TOO',x:'Two apples, please.'},
-      {e:'Three',h:'שלוש',p:'THREE',x:'I need three minutes.'},
-      {e:'Four',h:'ארבע',p:'FOR',x:'Table for four, please.'},
-      {e:'Five',h:'חמש',p:'FYVE',x:'Five more minutes!'},
-      {e:'Ten',h:'עשר',p:'TEN',x:'Ten minutes later.'},
-      {e:'Twenty',h:'עשרים',p:'TWEN-tee',x:'Twenty dollars, please.'},
-      {e:'One hundred',h:'מאה',p:'WUN HUN-dred',x:'One hundred percent!'},
+      {e:'One',h:'אחד',x:'One coffee, please.'},
+      {e:'Two',h:'שניים',x:'Two apples, please.'},
+      {e:'Three',h:'שלוש',x:'I need three minutes.'},
+      {e:'Four',h:'ארבע',x:'Table for four, please.'},
+      {e:'Five',h:'חמש',x:'Five more minutes!'},
+      {e:'Ten',h:'עשר',x:'Ten minutes later.'},
+      {e:'Twenty',h:'עשרים',x:'Twenty dollars, please.'},
+      {e:'One hundred',h:'מאה',x:'One hundred percent!'},
     ]},
     {id:'colors',he:'צבעים',en:'Colors',emoji:'🎨',words:[
-      {e:'Red',h:'אדום',p:'RED',x:'I like the red one.'},
-      {e:'Blue',h:'כחול',p:'BLOO',x:'The sky is blue.'},
-      {e:'Green',h:'ירוק',p:'GREEN',x:'Grass is green.'},
-      {e:'Yellow',h:'צהוב',p:'YEL-oh',x:'The sun is yellow.'},
-      {e:'White',h:'לבן',p:'WYTE',x:'I want the white shirt.'},
-      {e:'Black',h:'שחור',p:'BLAK',x:'Black coffee, please.'},
-      {e:'Orange',h:'כתום',p:'OR-anj',x:'I want an orange juice.'},
-      {e:'Pink',h:'ורוד',p:'PINK',x:'She loves pink flowers.'},
+      {e:'Red',h:'אדום',x:'I like the red one.'},
+      {e:'Blue',h:'כחול',x:'The sky is blue.'},
+      {e:'Green',h:'ירוק',x:'Grass is green.'},
+      {e:'Yellow',h:'צהוב',x:'The sun is yellow.'},
+      {e:'White',h:'לבן',x:'I want the white shirt.'},
+      {e:'Black',h:'שחור',x:'Black coffee, please.'},
+      {e:'Orange',h:'כתום',x:'I want an orange juice.'},
+      {e:'Pink',h:'ורוד',x:'She loves pink flowers.'},
     ]},
     {id:'family',he:'משפחה',en:'Family',emoji:'👨‍👩‍👧',words:[
-      {e:'Mother',h:'אמא',p:'MUH-ther',x:'My mother is very kind.'},
-      {e:'Father',h:'אבא',p:'FAH-ther',x:'My father works here.'},
-      {e:'Brother',h:'אח',p:'BRU-ther',x:'This is my brother.'},
-      {e:'Sister',h:'אחות',p:'SIS-ter',x:'My sister is a doctor.'},
-      {e:'Son',h:'בן',p:'SUN',x:'He is my son.'},
-      {e:'Daughter',h:'בת',p:'DAW-ter',x:'She is my daughter.'},
-      {e:'Grandmother',h:'סבתא',p:'GRAND-muh-ther',x:'I love my grandmother.'},
-      {e:'Grandfather',h:'סבא',p:'GRAND-fah-ther',x:'My grandfather is funny.'},
+      {e:'Mother',h:'אמא',x:'My mother is very kind.'},
+      {e:'Father',h:'אבא',x:'My father works here.'},
+      {e:'Brother',h:'אח',x:'This is my brother.'},
+      {e:'Sister',h:'אחות',x:'My sister is a doctor.'},
+      {e:'Son',h:'בן',x:'He is my son.'},
+      {e:'Daughter',h:'בת',x:'She is my daughter.'},
+      {e:'Grandmother',h:'סבתא',x:'I love my grandmother.'},
+      {e:'Grandfather',h:'סבא',x:'My grandfather is funny.'},
     ]},
     {id:'food',he:'אוכל',en:'Food & Drink',emoji:'🍎',words:[
-      {e:'Water',h:'מים',p:'WAW-ter',x:'Can I have some water?'},
-      {e:'Bread',h:'לחם',p:'BRED',x:'Fresh bread, please.'},
-      {e:'Coffee',h:'קפה',p:'KAW-fee',x:'One coffee, please.'},
-      {e:'Milk',h:'חלב',p:'MILK',x:'I take milk in my coffee.'},
-      {e:'Chicken',h:'עוף',p:'CHIK-en',x:'I will have the chicken.'},
-      {e:'Salad',h:'סלט',p:'SAL-ad',x:'A salad, please.'},
-      {e:'Juice',h:'מיץ',p:'JOOS',x:'Orange juice, please.'},
-      {e:'Dessert',h:'קינוח',p:'deh-ZURT',x:'What desserts do you have?'},
+      {e:'Water',h:'מים',x:'Can I have some water?'},
+      {e:'Bread',h:'לחם',x:'Fresh bread, please.'},
+      {e:'Coffee',h:'קפה',x:'One coffee, please.'},
+      {e:'Milk',h:'חלב',x:'I take milk in my coffee.'},
+      {e:'Chicken',h:'עוף',x:'I will have the chicken.'},
+      {e:'Salad',h:'סלט',x:'A salad, please.'},
+      {e:'Juice',h:'מיץ',x:'Orange juice, please.'},
+      {e:'Dessert',h:'קינוח',x:'What desserts do you have?'},
     ]},
     {id:'body',he:'גוף',en:'Body Parts',emoji:'🧍',words:[
-      {e:'Head',h:'ראש',p:'HED',x:'My head hurts.'},
-      {e:'Hand',h:'יד',p:'HAND',x:'Give me your hand.'},
-      {e:'Eye',h:'עין',p:'EYE',x:'I have something in my eye.'},
-      {e:'Ear',h:'אוזן',p:'EER',x:'My ear hurts.'},
-      {e:'Nose',h:'אף',p:'NOZE',x:'I have a runny nose.'},
-      {e:'Mouth',h:'פה',p:'MOWTH',x:'Open your mouth wide.'},
-      {e:'Leg',h:'רגל',p:'LEG',x:'My leg is tired.'},
-      {e:'Back',h:'גב',p:'BAK',x:'My back hurts today.'},
+      {e:'Head',h:'ראש',x:'My head hurts.'},
+      {e:'Hand',h:'יד',x:'Give me your hand.'},
+      {e:'Eye',h:'עין',x:'I have something in my eye.'},
+      {e:'Ear',h:'אוזן',x:'My ear hurts.'},
+      {e:'Nose',h:'אף',x:'I have a runny nose.'},
+      {e:'Mouth',h:'פה',x:'Open your mouth wide.'},
+      {e:'Leg',h:'רגל',x:'My leg is tired.'},
+      {e:'Back',h:'גב',x:'My back hurts today.'},
     ]},
   ],
   intermediate:[
     {id:'verbs',he:'פעלים',en:'Useful Phrases',emoji:'⚡',words:[
-      {e:'I would like',h:'אני הייתי רוצה',p:'I wood LYK',x:'I would like a table for two.'},
-      {e:'Can you help me?',h:'אתה יכול לעזור לי?',p:'kan yoo HELP mee',x:'Excuse me, can you help me?'},
-      {e:'Where is the bathroom?',h:'איפה השירותים?',p:'WAIR iz thuh BATH-room',x:'Sorry, where is the bathroom?'},
-      {e:'How much does it cost?',h:'כמה זה עולה?',p:'how MUCH duz it KOST',x:'Excuse me, how much does it cost?'},
-      {e:'I do not understand',h:'אני לא מבין',p:'I doo NOT un-der-STAND',x:'Sorry, I do not understand.'},
-      {e:'Can you repeat that?',h:'אתה יכול לחזור על זה?',p:'kan yoo reh-PEET THAT',x:'Can you repeat that more slowly?'},
-      {e:'I am looking for',h:'אני מחפש',p:'I am LOOK-ing for',x:'I am looking for the train station.'},
-      {e:'My name is',h:'שמי',p:'my NAYM iz',x:'Hi! My name is Sarah.'},
+      {e:'I would like',h:'אני הייתי רוצה',x:'I would like a table for two.'},
+      {e:'Can you help me?',h:'אתה יכול לעזור לי?',x:'Excuse me, can you help me?'},
+      {e:'Where is the bathroom?',h:'איפה השירותים?',x:'Sorry, where is the bathroom?'},
+      {e:'How much does it cost?',h:'כמה זה עולה?',x:'Excuse me, how much does it cost?'},
+      {e:'I do not understand',h:'אני לא מבין',x:'Sorry, I do not understand.'},
+      {e:'Can you repeat that?',h:'אתה יכול לחזור על זה?',x:'Can you repeat that more slowly?'},
+      {e:'I am looking for',h:'אני מחפש',x:'I am looking for the train station.'},
+      {e:'My name is',h:'שמי',x:'Hi! My name is Sarah.'},
     ]},
     {id:'time',he:'זמן',en:'Time & Days',emoji:'🕐',words:[
-      {e:'What time is it?',h:'מה השעה?',p:'wut TYM iz it',x:'Excuse me, what time is it?'},
-      {e:'Today',h:'היום',p:'tuh-DAY',x:'Today is Monday.'},
-      {e:'Tomorrow',h:'מחר',p:'tuh-MOR-oh',x:'See you tomorrow!'},
-      {e:'Yesterday',h:'אתמול',p:'YES-ter-day',x:'I called yesterday.'},
-      {e:'In the morning',h:'בבוקר',p:'in thuh MOR-ning',x:'I wake up in the morning.'},
-      {e:'In the evening',h:'בערב',p:'in thuh EEV-ning',x:'I exercise in the evening.'},
-      {e:'Next week',h:'שבוע הבא',p:'NEXT WEEK',x:'I will call you next week.'},
-      {e:'Right now',h:'עכשיו',p:'RYT NOW',x:'I need help right now!'},
+      {e:'What time is it?',h:'מה השעה?',x:'Excuse me, what time is it?'},
+      {e:'Today',h:'היום',x:'Today is Monday.'},
+      {e:'Tomorrow',h:'מחר',x:'See you tomorrow!'},
+      {e:'Yesterday',h:'אתמול',x:'I called yesterday.'},
+      {e:'In the morning',h:'בבוקר',x:'I wake up in the morning.'},
+      {e:'In the evening',h:'בערב',x:'I exercise in the evening.'},
+      {e:'Next week',h:'שבוע הבא',x:'I will call you next week.'},
+      {e:'Right now',h:'עכשיו',x:'I need help right now!'},
     ]},
     {id:'travel',he:'נסיעה',en:'Travel',emoji:'✈️',words:[
-      {e:'Where is the airport?',h:'איפה נמל התעופה?',p:'WAIR iz thuh AIR-port',x:'Excuse me, where is the airport?'},
-      {e:'I need a taxi',h:'אני צריך מונית',p:'I NEED a TAK-see',x:'Can you call me a taxi, please?'},
-      {e:'One ticket please',h:'כרטיס אחד בבקשה',p:'WUN TIK-et PLEEZ',x:'One ticket to Tel Aviv, please.'},
-      {e:'What gate?',h:'איזה שער?',p:'wut GAYT',x:'Excuse me, what gate is my flight?'},
-      {e:'My bag is lost',h:'האריזה שלי אבדה',p:'my BAG iz LOST',x:'My bag is lost. Can you help me?'},
-      {e:'I have a reservation',h:'יש לי הזמנה',p:'I hav a rez-er-VAY-shun',x:'I have a reservation under my name.'},
-      {e:'Check in',h:'קבלה למלון',p:'CHEK IN',x:'I would like to check in, please.'},
-      {e:'Check out',h:'יציאה ממלון',p:'CHEK OWT',x:'I need to check out tomorrow morning.'},
+      {e:'Where is the airport?',h:'איפה נמל התעופה?',x:'Excuse me, where is the airport?'},
+      {e:'I need a taxi',h:'אני צריך מונית',x:'Can you call me a taxi, please?'},
+      {e:'One ticket please',h:'כרטיס אחד בבקשה',x:'One ticket to Tel Aviv, please.'},
+      {e:'What gate?',h:'איזה שער?',x:'Excuse me, what gate is my flight?'},
+      {e:'My bag is lost',h:'האריזה שלי אבדה',x:'My bag is lost. Can you help me?'},
+      {e:'I have a reservation',h:'יש לי הזמנה',x:'I have a reservation under my name.'},
+      {e:'Check in',h:'קבלה למלון',x:'I would like to check in, please.'},
+      {e:'Check out',h:'יציאה ממלון',x:'I need to check out tomorrow morning.'},
     ]},
     {id:'shopping',he:'קניות',en:'Shopping',emoji:'🛒',words:[
-      {e:'Do you have this in my size?',h:'יש לך את זה במידה שלי?',p:'doo yoo HAV this in my SYZE',x:'Do you have this in my size?'},
-      {e:'I am just looking',h:'אני רק מסתכל',p:'I am JUST LOOK-ing',x:'No thank you, I am just looking.'},
-      {e:'Can I try this on?',h:'אפשר למדוד את זה?',p:'kan I TRY this ON',x:'Can I try this on, please?'},
-      {e:'Do you accept credit cards?',h:'אתם מקבלים כרטיסי אשראי?',p:'doo yoo ak-SEPT KRED-it KARDZ',x:'Do you accept credit cards?'},
-      {e:'I will take it',h:'אני אקח את זה',p:'I wil TAYK it',x:'Perfect, I will take it!'},
-      {e:'Can I get a receipt?',h:'אפשר לקבל קבלה?',p:'kan I GET a reh-SEET',x:'Can I get a receipt, please?'},
-      {e:'Is there a discount?',h:'יש הנחה?',p:'iz THAIR a DIS-kawnt',x:'Excuse me, is there a discount?'},
-      {e:'Too expensive',h:'יקר מדי',p:'TOO ex-PEN-siv',x:'That is too expensive for me.'},
+      {e:'Do you have this in my size?',h:'יש לך את זה במידה שלי?',x:'Do you have this in my size?'},
+      {e:'I am just looking',h:'אני רק מסתכל',x:'No thank you, I am just looking.'},
+      {e:'Can I try this on?',h:'אפשר למדוד את זה?',x:'Can I try this on, please?'},
+      {e:'Do you accept credit cards?',h:'אתם מקבלים כרטיסי אשראי?',x:'Do you accept credit cards?'},
+      {e:'I will take it',h:'אני אקח את זה',x:'Perfect, I will take it!'},
+      {e:'Can I get a receipt?',h:'אפשר לקבל קבלה?',x:'Can I get a receipt, please?'},
+      {e:'Is there a discount?',h:'יש הנחה?',x:'Excuse me, is there a discount?'},
+      {e:'Too expensive',h:'יקר מדי',x:'That is too expensive for me.'},
     ]},
     {id:'feelings',he:'רגשות',en:'Feelings',emoji:'😊',words:[
-      {e:'I am happy',h:'אני שמח',p:'I am HAP-ee',x:'I am very happy to be here!'},
-      {e:'I am tired',h:'אני עייף',p:'I am TY-erd',x:'Sorry, I am really tired today.'},
-      {e:'I am hungry',h:'אני רעב',p:'I am HUN-gree',x:'I am very hungry. Let us eat!'},
-      {e:'I am lost',h:'אני אבוד',p:'I am LOST',x:'I am lost. Can you help me?'},
-      {e:'I am excited',h:'אני נרגש',p:'I am ek-SY-ted',x:'I am so excited about this trip!'},
-      {e:'I miss you',h:'אני מתגעגע אליך',p:'I MIS yoo',x:'I miss you so much!'},
-      {e:'I love it',h:'אני אוהב את זה',p:'I LUV it',x:'This food is amazing, I love it!'},
-      {e:'I am not feeling well',h:'אני לא מרגיש טוב',p:'I am NOT FEEL-ing WEL',x:'Sorry, I am not feeling well today.'},
+      {e:'I am happy',h:'אני שמח',x:'I am very happy to be here!'},
+      {e:'I am tired',h:'אני עייף',x:'Sorry, I am really tired today.'},
+      {e:'I am hungry',h:'אני רעב',x:'I am very hungry. Let us eat!'},
+      {e:'I am lost',h:'אני אבוד',x:'I am lost. Can you help me?'},
+      {e:'I am excited',h:'אני נרגש',x:'I am so excited about this trip!'},
+      {e:'I miss you',h:'אני מתגעגע אליך',x:'I miss you so much!'},
+      {e:'I love it',h:'אני אוהב את זה',x:'This food is amazing, I love it!'},
+      {e:'I am not feeling well',h:'אני לא מרגיש טוב',x:'Sorry, I am not feeling well today.'},
     ]},
     {id:'health',he:'בריאות',en:'Health',emoji:'🏥',words:[
-      {e:'I need a doctor',h:'אני צריך רופא',p:'I NEED a DOK-ter',x:'Please, I need a doctor now!'},
-      {e:'I have a headache',h:'יש לי כאב ראש',p:'I hav a HED-ayk',x:'I have a terrible headache.'},
-      {e:'I am allergic to',h:'אני אלרגי ל',p:'I am a-LER-jik TOO',x:'I am allergic to nuts.'},
-      {e:'Call an ambulance',h:'קרא לאמבולנס',p:'KAWL an AM-byoo-lans',x:'Please call an ambulance!'},
-      {e:'Where is the pharmacy?',h:'איפה בית המרקחת?',p:'WAIR iz thuh FAR-muh-see',x:'Where is the nearest pharmacy?'},
-      {e:'I take medication',h:'אני לוקח תרופות',p:'I TAYK med-ih-KAY-shun',x:'I take medication every morning.'},
-      {e:'I need a prescription',h:'אני צריך מרשם',p:'I NEED a preh-SKRIP-shun',x:'I need a prescription for this medicine.'},
-      {e:'I feel better',h:'אני מרגיש יותר טוב',p:'I FEEL BET-er',x:'Thank you, I feel much better now.'},
+      {e:'I need a doctor',h:'אני צריך רופא',x:'Please, I need a doctor now!'},
+      {e:'I have a headache',h:'יש לי כאב ראש',x:'I have a terrible headache.'},
+      {e:'I am allergic to',h:'אני אלרגי ל',x:'I am allergic to nuts.'},
+      {e:'Call an ambulance',h:'קרא לאמבולנס',x:'Please call an ambulance!'},
+      {e:'Where is the pharmacy?',h:'איפה בית המרקחת?',x:'Where is the nearest pharmacy?'},
+      {e:'I take medication',h:'אני לוקח תרופות',x:'I take medication every morning.'},
+      {e:'I need a prescription',h:'אני צריך מרשם',x:'I need a prescription for this medicine.'},
+      {e:'I feel better',h:'אני מרגיש יותר טוב',x:'Thank you, I feel much better now.'},
     ]},
   ],
   advanced:[
     {id:'idioms',he:'ביטויים',en:'Common Idioms',emoji:'💬',words:[
-      {e:'Break a leg',h:'בהצלחה',p:'BRAYK a LEG',x:'Break a leg at your interview!'},
-      {e:'It is a piece of cake',h:'זה קל מאוד',p:'it iz a PEES uv KAYK',x:'Do not worry, it is a piece of cake!'},
-      {e:'Under the weather',h:'לא מרגיש טוב',p:'UN-der thuh WEH-ther',x:'I am feeling a bit under the weather.'},
-      {e:'Hit the road',h:'לצאת לדרך',p:'HIT thuh ROHD',x:'Let us hit the road before traffic.'},
-      {e:'Cost an arm and a leg',h:'לעלות הון עתק',p:'KOST an ARM and a LEG',x:'This hotel cost an arm and a leg!'},
-      {e:'The more the merrier',h:'כל עוד יש יותר, יותר כיף',p:'thuh MOR thuh MER-ee-er',x:'Bring your friends! The more the merrier.'},
-      {e:'Once in a blue moon',h:'לעיתים נדירות',p:'WUNS in a BLOO MOON',x:'We eat out once in a blue moon.'},
-      {e:'No pain, no gain',h:'בלי מאמץ, אין הצלחה',p:'no PAYN no GAYN',x:'Keep training! No pain, no gain.'},
+      {e:'Break a leg',h:'בהצלחה',x:'Break a leg at your interview!'},
+      {e:'It is a piece of cake',h:'זה קל מאוד',x:'Do not worry, it is a piece of cake!'},
+      {e:'Under the weather',h:'לא מרגיש טוב',x:'I am feeling a bit under the weather.'},
+      {e:'Hit the road',h:'לצאת לדרך',x:'Let us hit the road before traffic.'},
+      {e:'Cost an arm and a leg',h:'לעלות הון עתק',x:'This hotel cost an arm and a leg!'},
+      {e:'The more the merrier',h:'כל עוד יש יותר, יותר כיף',x:'Bring your friends! The more the merrier.'},
+      {e:'Once in a blue moon',h:'לעיתים נדירות',x:'We eat out once in a blue moon.'},
+      {e:'No pain, no gain',h:'בלי מאמץ, אין הצלחה',x:'Keep training! No pain, no gain.'},
     ]},
     {id:'business',he:'עסקים',en:'Business Talk',emoji:'💼',words:[
-      {e:'Let us touch base',h:'בוא ניצור קשר',p:'let us TUCH BAYS',x:'Let us touch base next week.'},
-      {e:'I will follow up',h:'אני אחזור אל זה',p:'I wil FOL-oh UP',x:'I will follow up with you by email.'},
-      {e:'What is the deadline?',h:'מה המועד האחרון?',p:'wut iz thuh DED-lyne',x:'What is the deadline for this project?'},
-      {e:'Let us get the ball rolling',h:'בוא נתחיל',p:'let us GET thuh BAWL ROH-ling',x:'Let us get the ball rolling on this deal.'},
-      {e:'I will get back to you',h:'אחזור אליך',p:'I wil GET BAK too yoo',x:'I will get back to you after the meeting.'},
-      {e:'Can we schedule a call?',h:'אפשר לקבוע שיחה?',p:'kan wee SKEJ-ul a KAWL',x:'Can we schedule a call for Monday?'},
-      {e:'To be honest with you',h:'להיות כנה איתך',p:'too BEE ON-est with YOO',x:'To be honest with you, I need more time.'},
-      {e:'That works for me',h:'זה מתאים לי',x:'Let us meet at 3pm.' ,p:'THAT wurks for MEE'},
+      {e:'Let us touch base',h:'בוא ניצור קשר',x:'Let us touch base next week.'},
+      {e:'I will follow up',h:'אני אחזור אל זה',x:'I will follow up with you by email.'},
+      {e:'What is the deadline?',h:'מה המועד האחרון?',x:'What is the deadline for this project?'},
+      {e:'Let us get the ball rolling',h:'בוא נתחיל',x:'Let us get the ball rolling on this deal.'},
+      {e:'I will get back to you',h:'אחזור אליך',x:'I will get back to you after the meeting.'},
+      {e:'Can we schedule a call?',h:'אפשר לקבוע שיחה?',x:'Can we schedule a call for Monday?'},
+      {e:'To be honest with you',h:'להיות כנה איתך',x:'To be honest with you, I need more time.'},
+      {e:'That works for me',h:'זה מתאים לי',x:'Let us meet at 3pm.' },
     ]},
     {id:'smalltalk',he:'שיחה קלה',en:'Small Talk',emoji:'🌍',words:[
-      {e:'How have you been?',h:'מה שלומך לאחרונה?',p:'how hav yoo BIN',x:'Long time no see! How have you been?'},
-      {e:'Not too bad',h:'לא רע',p:'NOT too BAD',x:'How are you? Not too bad, thanks!'},
-      {e:'What do you do for a living?',h:'מה אתה עושה בחיים?',p:'wut doo yoo DOO for a LIV-ing',x:'So, what do you do for a living?'},
-      {e:'I know what you mean',h:'אני מבין אותך',p:'I NOH wut yoo MEEN',x:'Yes, I know exactly what you mean.'},
-      {e:'Tell me about yourself',h:'ספר לי על עצמך',p:'TEL mee uh-BOWT yor-SELF',x:'Nice to meet you! Tell me about yourself.'},
-      {e:'What do you think?',h:'מה דעתך?',p:'wut doo yoo THINK',x:'That is interesting. What do you think?'},
-      {e:'I totally agree',h:'אני לגמרי מסכים',p:'I TOH-tal-ee uh-GREE',x:'I totally agree with you on that!'},
-      {e:'That is a good point',h:'זה נקודה טובה',p:'THAT iz a GOOD POYNT',x:'That is a really good point, actually.'},
+      {e:'How have you been?',h:'מה שלומך לאחרונה?',x:'Long time no see! How have you been?'},
+      {e:'Not too bad',h:'לא רע',x:'How are you? Not too bad, thanks!'},
+      {e:'What do you do for a living?',h:'מה אתה עושה בחיים?',x:'So, what do you do for a living?'},
+      {e:'I know what you mean',h:'אני מבין אותך',x:'Yes, I know exactly what you mean.'},
+      {e:'Tell me about yourself',h:'ספר לי על עצמך',x:'Nice to meet you! Tell me about yourself.'},
+      {e:'What do you think?',h:'מה דעתך?',x:'That is interesting. What do you think?'},
+      {e:'I totally agree',h:'אני לגמרי מסכים',x:'I totally agree with you on that!'},
+      {e:'That is a good point',h:'זה נקודה טובה',x:'That is a really good point, actually.'},
     ]},
     {id:'conditionals',he:'תנאי',en:'Conditionals',emoji:'🔀',words:[
-      {e:'If I were you',h:'אילו הייתי במקומך',p:'if I WUR yoo',x:'If I were you, I would take the job.'},
-      {e:'I wish I could',h:'הלוואי שיכולתי',p:'I WISH I kood',x:'I wish I could come to your party!'},
-      {e:'What would you do if',h:'מה היית עושה אם',p:'wut wood yoo DOO if',x:'What would you do if you won the lottery?'},
-      {e:'As long as',h:'כל עוד',p:'az LONG az',x:'I will help you as long as you try.'},
-      {e:'Even though',h:'למרות ש',p:'EE-ven THOH',x:'I loved it even though it was hard.'},
-      {e:'I should have',h:'הייתי צריך',p:'I SHOOD hav',x:'I should have called you earlier. Sorry!'},
-      {e:'It depends on',h:'זה תלוי ב',p:'it deh-PENDZ on',x:'It depends on the weather, really.'},
-      {e:'In that case',h:'במקרה כזה',p:'in THAT KAYS',x:'Oh, in that case let us change the plan.'},
+      {e:'If I were you',h:'אילו הייתי במקומך',x:'If I were you, I would take the job.'},
+      {e:'I wish I could',h:'הלוואי שיכולתי',x:'I wish I could come to your party!'},
+      {e:'What would you do if',h:'מה היית עושה אם',x:'What would you do if you won the lottery?'},
+      {e:'As long as',h:'כל עוד',x:'I will help you as long as you try.'},
+      {e:'Even though',h:'למרות ש',x:'I loved it even though it was hard.'},
+      {e:'I should have',h:'הייתי צריך',x:'I should have called you earlier. Sorry!'},
+      {e:'It depends on',h:'זה תלוי ב',x:'It depends on the weather, really.'},
+      {e:'In that case',h:'במקרה כזה',x:'Oh, in that case let us change the plan.'},
     ]},
     {id:'writing',he:'ביטויי קישור',en:'Linking Phrases',emoji:'🔗',words:[
-      {e:'On the other hand',h:'מצד שני',p:'on thuh UTH-er HAND',x:'On the other hand, there are benefits.'},
-      {e:'As a matter of fact',h:'למעשה',p:'az a MAT-er uv FAK',x:'As a matter of fact, I agree with you.'},
-      {e:'To be fair',h:'להיות הוגן',p:'too BEE FAIR',x:'To be fair, she did warn us.'},
-      {e:'Having said that',h:'למרות זאת',p:'HAV-ing SED THAT',x:'Having said that, let us try again.'},
-      {e:'At the end of the day',h:'בסוף היום',p:'at thuh END uv thuh DAY',x:'At the end of the day, what matters is family.'},
-      {e:'For what it is worth',h:'אם זה שווה משהו',p:'for wut it iz WURTH',x:'For what it is worth, I think you are right.'},
-      {e:'All things considered',h:'בסך הכל',p:'awl THINGZ kun-SID-erd',x:'All things considered, it went well.'},
-      {e:'More often than not',h:'לרוב',p:'mor OF-en than NOT',x:'More often than not, he arrives late.'},
+      {e:'On the other hand',h:'מצד שני',x:'On the other hand, there are benefits.'},
+      {e:'As a matter of fact',h:'למעשה',x:'As a matter of fact, I agree with you.'},
+      {e:'To be fair',h:'להיות הוגן',x:'To be fair, she did warn us.'},
+      {e:'Having said that',h:'למרות זאת',x:'Having said that, let us try again.'},
+      {e:'At the end of the day',h:'בסוף היום',x:'At the end of the day, what matters is family.'},
+      {e:'For what it is worth',h:'אם זה שווה משהו',x:'For what it is worth, I think you are right.'},
+      {e:'All things considered',h:'בסך הכל',x:'All things considered, it went well.'},
+      {e:'More often than not',h:'לרוב',x:'More often than not, he arrives late.'},
     ]},
   ],
 };
@@ -539,6 +537,8 @@ function lm(){return LEVEL_META[cur.level];}
 function save(){try{localStorage.setItem('su_v1',JSON.stringify(data));}catch(e){}}
 function load(){try{const d=JSON.parse(localStorage.getItem('su_v1'));if(d)data=d;}catch(e){}}
 function shuffle(a){return[...a].sort(()=>Math.random()-0.5);}
+const CHEERS=['!כל הכבוד','!מדהים','!יופי','!אלוף','!מצוין','!נהדר','!סחתיין','!איזה כיף','!ממש טוב','!את/ה מדהים','!עבודה יפה','!פצצה'];
+function cheer(){return CHEERS[Math.floor(Math.random()*CHEERS.length)];}
 
 /* ══════════════════════════════════
    SPEECH SYNTHESIS (TTS)
@@ -720,7 +720,6 @@ function updateCard(){
   document.getElementById('cardPbar').style.width=`${((cur.ci+1)/t)*100}%`;
   document.getElementById('wHebrew').textContent=w.h;
   document.getElementById('wEnglish').textContent=w.e;
-  document.getElementById('wPronun').textContent='🔊 '+w.p;
   document.getElementById('wExample').textContent='"'+w.x+'"';
   document.getElementById('prevBtn').classList.toggle('btn-off',cur.ci===0);
   const last=cur.ci===t-1;
@@ -763,8 +762,8 @@ function showLessonFeedback(ok,heard,target){
   const fb=document.getElementById('lessonFb');
   fb.className='fb-card fin '+(ok?'correct':'wrong');
   fb.style.display='block';
-  document.getElementById('lessonFbEmoji').textContent=ok?'🎉':'😅';
-  document.getElementById('lessonFbMain').textContent=ok?'Great pronunciation! מעולה!':'Try again! נסה שוב!';
+  document.getElementById('lessonFbEmoji').textContent=ok?['🎉','🌟','💪','✨','🔥','👏','🥳'][Math.floor(Math.random()*7)]:'😅';
+  document.getElementById('lessonFbMain').textContent=ok?cheer():'!נסה שוב';
   document.getElementById('lessonFbHeard').textContent='I heard: "'+heard+'" · Target: "'+target+'"';
   if(ok) setTimeout(()=>{if(cur.ci<cur.lesson.words.length-1)nextCard();},1200);
 }
@@ -797,7 +796,6 @@ function renderQ(){
   document.getElementById('qPbar').style.width=`${(cur.qi/t)*100}%`;
   document.getElementById('qScore').textContent=cur.qs;
   document.getElementById('qHebrew').textContent=q.word.h;
-  document.getElementById('qHint').textContent='Pronunciation: '+q.word.p;
   document.getElementById('qFb').style.display='none';
   document.getElementById('heardText').textContent='...';
   cur.spokenText=''; cur.fa=false;
@@ -855,8 +853,8 @@ function handleAnswer(ok,heard,target,skipSpeak){
   if(ok){cur.qs++; if(!skipSpeak) speak(target);}
   const fb=document.getElementById('qFb');
   fb.className='fb-card fin '+(ok?'correct':'wrong'); fb.style.display='block';
-  document.getElementById('qFbEmoji').textContent=ok?'🎉':'😅';
-  document.getElementById('qFbMain').textContent=ok?'Perfect! מצוין!':'Not quite! נסה שוב!';
+  document.getElementById('qFbEmoji').textContent=ok?['🎉','🌟','💪','✨','🔥','👏','🥳'][Math.floor(Math.random()*7)]:'😅';
+  document.getElementById('qFbMain').textContent=ok?cheer():'!נסה שוב';
   document.getElementById('qFbHeard').textContent=ok?'✓ "'+target+'"':'I heard: "'+heard+'" → "'+target+'"';
   document.getElementById('qScore').textContent=cur.qs;
   setTimeout(advQ,1300);
@@ -874,9 +872,9 @@ function showResult(){
   ud2.stars+=earned; if(wasNew) ud2.done.push(cur.lesson.id); save();
   document.getElementById('starCount').textContent=ud2.stars;
   const msgs={
-    beginner:['Great start! התחלה מצוינת!','Good job! עבודה טובה!','Keep going! המשך!'],
-    intermediate:['Excellent! מצוין!','Well done! כל הכבוד!','Keep practicing!'],
-    advanced:['Outstanding! יוצא דופן!','Impressive! מרשים!','Good effort! מאמץ טוב!'],
+    beginner:['!התחלה מצוינת','!עבודה טובה','!המשך כך'],
+    intermediate:['!מצוין','!כל הכבוד','!ממשיכים להתאמן'],
+    advanced:['!יוצא מן הכלל','!מרשים מאוד','!מאמץ יפה'],
   };
   document.getElementById('rEmoji').textContent=earned===3?'🏆':earned===2?'🌟':'💪';
   document.getElementById('rTitle').textContent=msgs[cur.level][3-earned];

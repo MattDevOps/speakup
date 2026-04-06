@@ -272,6 +272,7 @@ html,body{height:100%;width:100%;background:var(--bg);font-family:'Nunito',sans-
       <div class="q-card">
         <div class="q-prompt">Say this word in English • אמור את המילה הזאת באנגלית:</div>
         <div class="q-hebrew" id="qHebrew"></div>
+        <div class="q-hint" id="qNudge">Try saying it out loud — it helps!</div>
       </div>
 
       <!-- Mode toggle: speak or tap -->
@@ -530,7 +531,7 @@ let data={
   shira: {beginner:{stars:0,done:[]},intermediate:{stars:0,done:[]},advanced:{stars:0,done:[]}},
   shlomo:{beginner:{stars:0,done:[]},intermediate:{stars:0,done:[]},advanced:{stars:0,done:[]}},
 };
-let cur={userId:null,level:null,lesson:null,ci:0,qq:[],qi:0,qs:0,fa:false,quizMode:'speak',recognizing:false,spokenText:''};
+let cur={userId:null,level:null,lesson:null,ci:0,qq:[],qi:0,qs:0,streak:0,fa:false,quizMode:'speak',recognizing:false,spokenText:''};
 function ud(){return data[cur.userId][cur.level];}
 function user(){return USERS.find(u=>u.id===cur.userId);}
 function lm(){return LEVEL_META[cur.level];}
@@ -538,7 +539,14 @@ function save(){try{localStorage.setItem('su_v1',JSON.stringify(data));}catch(e)
 function load(){try{const d=JSON.parse(localStorage.getItem('su_v1'));if(d)data=d;}catch(e){}}
 function shuffle(a){return[...a].sort(()=>Math.random()-0.5);}
 const CHEERS=['!כל הכבוד','!מדהים','!יופי','!אלוף','!מצוין','!נהדר','!סחתיין','!איזה כיף','!ממש טוב','!את/ה מדהים','!עבודה יפה','!פצצה'];
-function cheer(){return CHEERS[Math.floor(Math.random()*CHEERS.length)];}
+const CHEERS_EN=["Nice job!","You're improving!","Keep going!","Great effort!","Nailed it!","You're on fire!","Awesome!","Well done!","Fantastic!","You've got this!","Super!","Brilliant!"];
+const WRONG_MSGS=["Don't worry, try again!","Almost! Give it another shot","Close! Try once more","Everyone gets this one wrong at first","English is tricky… but you're winning!","Not quite — you'll get it next time!","So close! One more try"];
+function cheer(){
+  // Mix English and Hebrew encouragement
+  const all=[...CHEERS,...CHEERS_EN];
+  return all[Math.floor(Math.random()*all.length)];
+}
+function wrongMsg(){return WRONG_MSGS[Math.floor(Math.random()*WRONG_MSGS.length)];}
 
 /* ══════════════════════════════════
    SPEECH SYNTHESIS (TTS)
@@ -763,7 +771,7 @@ function showLessonFeedback(ok,heard,target){
   fb.className='fb-card fin '+(ok?'correct':'wrong');
   fb.style.display='block';
   document.getElementById('lessonFbEmoji').textContent=ok?['🎉','🌟','💪','✨','🔥','👏','🥳'][Math.floor(Math.random()*7)]:'😅';
-  document.getElementById('lessonFbMain').textContent=ok?cheer():'!נסה שוב';
+  document.getElementById('lessonFbMain').textContent=ok?cheer():wrongMsg();
   document.getElementById('lessonFbHeard').textContent='I heard: "'+heard+'" · Target: "'+target+'"';
   if(ok) setTimeout(()=>{if(cur.ci<cur.lesson.words.length-1)nextCard();},1200);
 }
@@ -779,7 +787,7 @@ function startQuiz(){
     const wrong=shuffle(pool.filter(w=>w.e!==word.e)).slice(0,3).map(w=>w.e);
     return{word,options:shuffle([word.e,...wrong])};
   });
-  cur.qi=0; cur.qs=0; cur.fa=false; cur.quizMode='speak';
+  cur.qi=0; cur.qs=0; cur.streak=0; cur.fa=false; cur.quizMode='speak';
   renderQ(); show('s-quiz');
 }
 function setMode(m){
@@ -807,9 +815,11 @@ function renderQ(){
     <button class="opt" onclick="subMC(this,'${o.replace(/'/g,"\\'")}','${q.word.e.replace(/'/g,"\\'")}')">
       ${o}
     </button>`).join('');
+  // speak nudges
+  const nudges=["Try saying it out loud — it helps!","Listen and repeat — you'll remember it!","Speak up! Practice makes perfect","Say it with confidence!","Don't be shy — say it out loud!"];
+  document.getElementById('qNudge').textContent=nudges[cur.qi%nudges.length];
   // set mode display
   setMode(cur.quizMode);
-  // auto play the hebrew word (using TTS in english for the english word after a pause)
 }
 function playCurrentQ(){
   const q=cur.qq[cur.qi]; speak(q.word.e);
@@ -850,11 +860,14 @@ function subMC(btn,chosen,correct){
 }
 function handleAnswer(ok,heard,target,skipSpeak){
   cur.fa=true;
-  if(ok){cur.qs++; if(!skipSpeak) speak(target);}
+  if(ok){cur.qs++; cur.streak++; if(!skipSpeak) speak(target);}
+  else{cur.streak=0;}
   const fb=document.getElementById('qFb');
   fb.className='fb-card fin '+(ok?'correct':'wrong'); fb.style.display='block';
   document.getElementById('qFbEmoji').textContent=ok?['🎉','🌟','💪','✨','🔥','👏','🥳'][Math.floor(Math.random()*7)]:'😅';
-  document.getElementById('qFbMain').textContent=ok?cheer():'!נסה שוב';
+  let mainText=ok?cheer():wrongMsg();
+  if(ok&&cur.streak>=3) mainText=cur.streak+' in a row 🔥';
+  document.getElementById('qFbMain').textContent=mainText;
   document.getElementById('qFbHeard').textContent=ok?'✓ "'+target+'"':'I heard: "'+heard+'" → "'+target+'"';
   document.getElementById('qScore').textContent=cur.qs;
   setTimeout(advQ,1300);

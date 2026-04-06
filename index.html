@@ -185,6 +185,7 @@ html,body{height:100%;width:100%;background:var(--bg);font-family:'Nunito',sans-
 @keyframes sPop{0%{transform:scale(0) rotate(-25deg);opacity:0}80%{transform:scale(1.25) rotate(5deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
 @keyframes fIn{0%{transform:translateY(7px);opacity:0}100%{transform:translateY(0);opacity:1}}
 .fin{animation:fIn 0.22s ease;}
+
 </style>
 </head>
 <body>
@@ -918,8 +919,33 @@ function showResult(){
 function retryQuiz(){startQuiz();}
 
 /* ══════════════════════════════════
+   USAGE TRACKING (Firebase)
+══════════════════════════════════ */
+function trackEvent(userId,event){
+  if(!window._fbDb) return;
+  const ref=window._fbDb+'/events.json';
+  const payload=JSON.stringify({u:userId,e:event,t:Date.now()});
+  fetch(ref,{method:'POST',body:payload}).catch(()=>{});
+}
+
+// Patch selectUser to track logins
+const _origSelectUser=selectUser;
+selectUser=function(id){trackEvent(id,'login');_origSelectUser(id);};
+
+// Patch startLesson to track lessons
+const _origStartLesson=startLesson;
+startLesson=function(id){trackEvent(cur.userId,'lesson');_origStartLesson(id);};
+
+// Patch showResult to track quiz completions
+const _origShowResult=showResult;
+showResult=function(){trackEvent(cur.userId,'quiz');_origShowResult();};
+
+/* ══════════════════════════════════
    INIT
 ══════════════════════════════════ */
+// ⚠️ PASTE YOUR FIREBASE REALTIME DATABASE URL BELOW (see dashboard.html for setup instructions)
+window._fbDb='https://YOUR-PROJECT-ID.firebaseio.com/speakup';
+
 load(); updateHeader(); renderProfiles();
 </script>
 </body>

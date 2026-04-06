@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpeakUp! - Parent Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1117;--gold:#f7c948;--coral:#ff6b6b;--blue:#4f8ef7;--green:#4ade80;--purple:#a78bfa;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff;min-height:100vh;padding:20px;}
+.container{max-width:900px;margin:0 auto;}
+.header{text-align:center;margin-bottom:30px;}
+.header h1{font-size:28px;font-weight:900;margin-bottom:4px;}
+.header h1 span{color:var(--gold);}
+.header p{color:rgba(255,255,255,0.4);font-size:13px;}
+.setup-box{background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);border-radius:16px;padding:20px;margin-bottom:24px;display:none;}
+.setup-box h3{color:var(--coral);font-size:16px;margin-bottom:10px;}
+.setup-box ol{color:rgba(255,255,255,0.7);font-size:13px;padding-left:20px;line-height:2;}
+.setup-box code{background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px;font-size:12px;}
+.config-row{display:flex;gap:10px;margin-bottom:24px;}
+.config-row input{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:12px 16px;color:#fff;font-family:'Nunito',sans-serif;font-size:14px;outline:none;}
+.config-row input::placeholder{color:rgba(255,255,255,0.3);}
+.config-row input:focus{border-color:var(--blue);}
+.config-row button{background:linear-gradient(135deg,var(--blue),#2563eb);border:none;border-radius:12px;padding:12px 24px;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;cursor:pointer;}
+.config-row button:hover{opacity:0.9;}
+.help-toggle{color:var(--gold);font-size:12px;cursor:pointer;text-decoration:underline;margin-bottom:20px;display:inline-block;}
+.status{text-align:center;color:rgba(255,255,255,0.4);font-size:13px;margin-bottom:20px;}
+.status.ok{color:var(--green);}
+.status.err{color:var(--coral);}
+.refresh-row{text-align:center;margin-bottom:20px;}
+.refresh-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:8px 20px;color:rgba(255,255,255,0.6);font-size:13px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;}
+.refresh-btn:hover{background:rgba(255,255,255,0.12);}
+.auto-label{color:rgba(255,255,255,0.3);font-size:11px;margin-left:10px;}
+
+.users-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:30px;}
+.user-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:20px;}
+.user-hdr{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.user-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;background:rgba(255,255,255,0.08);}
+.user-name{font-weight:900;font-size:20px;}
+.user-last{color:rgba(255,255,255,0.35);font-size:11px;margin-top:2px;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+.stat-box{background:rgba(255,255,255,0.05);border-radius:12px;padding:12px 8px;text-align:center;}
+.stat-num{color:var(--gold);font-weight:900;font-size:22px;}
+.stat-lbl{color:rgba(255,255,255,0.4);font-size:10px;margin-top:3px;}
+.activity-bar{margin-bottom:12px;}
+.activity-title{color:rgba(255,255,255,0.4);font-size:11px;font-weight:700;margin-bottom:6px;}
+.day-row{display:flex;align-items:center;gap:8px;margin-bottom:3px;}
+.day-label{color:rgba(255,255,255,0.3);font-size:10px;width:32px;text-align:right;}
+.day-bar-wrap{flex:1;background:rgba(255,255,255,0.06);border-radius:4px;height:8px;}
+.day-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width 0.3s;}
+.day-count{color:rgba(255,255,255,0.3);font-size:10px;width:20px;}
+
+.log-section{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px;margin-bottom:20px;}
+.log-section h3{color:rgba(255,255,255,0.5);font-size:13px;font-weight:800;margin-bottom:12px;letter-spacing:0.5px;}
+.log-entry{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.log-emoji{font-size:16px;width:24px;text-align:center;}
+.log-text{flex:1;color:rgba(255,255,255,0.6);font-size:12px;}
+.log-text b{color:#fff;font-weight:700;}
+.log-time{color:rgba(255,255,255,0.25);font-size:10px;white-space:nowrap;}
+.empty{text-align:center;color:rgba(255,255,255,0.25);font-size:14px;padding:40px;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📊 <span>SpeakUp!</span> Parent Dashboard</h1>
+    <p>See how Sara, Shira & Shlomo are using the app</p>
+  </div>
+
+  <div class="config-row">
+    <input type="text" id="fbUrl" placeholder="Paste your Firebase Realtime Database URL here...">
+    <button onclick="connect()">Connect</button>
+  </div>
+  <span class="help-toggle" onclick="toggleSetup()">How do I set this up?</span>
+
+  <div class="setup-box" id="setupBox">
+    <h3>One-time Firebase setup (free, ~3 minutes)</h3>
+    <ol>
+      <li>Go to <code>console.firebase.google.com</code> and create a new project (name it anything, e.g. "speakup-tracker")</li>
+      <li>In the left sidebar, click <b>Build > Realtime Database</b></li>
+      <li>Click <b>Create Database</b>, choose any region, then select <b>Start in test mode</b></li>
+      <li>Copy the database URL shown at the top (looks like <code>https://speakup-tracker-xxxxx-default-rtdb.firebaseio.com</code>)</li>
+      <li>Paste that URL in the box above and click Connect</li>
+      <li>In <code>index.html</code>, find the line <code>window._fbDb='https://YOUR-PROJECT-ID...'</code> near the bottom and replace it with: <code>window._fbDb='YOUR-URL/speakup'</code></li>
+      <li>That's it! The app on their phones will start sending data and you'll see it here</li>
+    </ol>
+    <p style="color:rgba(255,255,255,0.4);font-size:11px;margin-top:10px">Note: "test mode" rules expire after 30 days. When they do, go to Database > Rules and set read/write to <code>true</code>.</p>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <div class="refresh-row" id="refreshRow" style="display:none">
+    <button class="refresh-btn" onclick="fetchData()">Refresh now</button>
+    <span class="auto-label">Auto-refreshes every 30 seconds</span>
+  </div>
+
+  <div id="content"><div class="empty">Enter your Firebase URL above to get started</div></div>
+</div>
+
+<script>
+const USERS=[
+  {id:'sara',name:'Sara',emoji:'👩'},
+  {id:'shira',name:'Shira',emoji:'👧'},
+  {id:'shlomo',name:'Shlomo',emoji:'👨'},
+];
+let fbBase='';
+let allEvents=[];
+let autoTimer=null;
+
+// Persist the URL so you don't have to paste it every time
+(function loadSaved(){
+  const saved=localStorage.getItem('su_dash_url');
+  if(saved){document.getElementById('fbUrl').value=saved;connect();}
+})();
+
+function toggleSetup(){
+  const b=document.getElementById('setupBox');
+  b.style.display=b.style.display==='none'?'block':'none';
+}
+
+function connect(){
+  let url=document.getElementById('fbUrl').value.trim().replace(/\/+$/,'');
+  if(!url){setStatus('Please paste a URL','err');return;}
+  // ensure it ends with /speakup
+  if(!url.endsWith('/speakup')) url+='/speakup';
+  fbBase=url;
+  localStorage.setItem('su_dash_url',document.getElementById('fbUrl').value.trim());
+  setStatus('Connecting...','');
+  fetchData();
+  document.getElementById('refreshRow').style.display='block';
+  if(autoTimer) clearInterval(autoTimer);
+  autoTimer=setInterval(fetchData,30000);
+}
+
+function setStatus(msg,cls){
+  const el=document.getElementById('status');
+  el.textContent=msg;el.className='status '+(cls||'');
+}
+
+async function fetchData(){
+  try{
+    const res=await fetch(fbBase+'/events.json');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const raw=await res.json();
+    if(!raw){allEvents=[];render();setStatus('Connected - no data yet','ok');return;}
+    allEvents=Object.values(raw).sort((a,b)=>a.t-b.t);
+    setStatus('Connected - '+allEvents.length+' events loaded (last refresh: '+new Date().toLocaleTimeString()+')','ok');
+    render();
+  }catch(e){
+    setStatus('Error: '+e.message+' - check your URL','err');
+  }
+}
+
+function render(){
+  if(!allEvents.length){document.getElementById('content').innerHTML='<div class="empty">No usage data yet. Once they start using the app, data will appear here.</div>';return;}
+
+  const now=Date.now();
+  // User cards
+  let cards=USERS.map(u=>{
+    const evts=allEvents.filter(e=>e.u===u.id);
+    const sessions=evts.filter(e=>e.e==='login');
+    const lessons=evts.filter(e=>e.e==='lesson');
+    const quizzes=evts.filter(e=>e.e==='quiz');
+    const last=evts.length?evts[evts.length-1]:null;
+    const lastStr=last?timeAgo(last.t):'Never';
+    const days7=evts.filter(e=>now-e.t<7*86400000).length;
+    const today=evts.filter(e=>now-e.t<86400000).length;
+
+    // Last 7 days bar chart
+    const dayBars=[];
+    const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    for(let i=6;i>=0;i--){
+      const dayStart=new Date();dayStart.setHours(0,0,0,0);dayStart.setDate(dayStart.getDate()-i);
+      const dayEnd=new Date(dayStart);dayEnd.setDate(dayEnd.getDate()+1);
+      const count=evts.filter(e=>e.t>=dayStart.getTime()&&e.t<dayEnd.getTime()).length;
+      dayBars.push({label:dayNames[dayStart.getDay()],count});
+    }
+    const maxDay=Math.max(...dayBars.map(d=>d.count),1);
+
+    return`<div class="user-card">
+      <div class="user-hdr">
+        <div class="user-avatar">${u.emoji}</div>
+        <div>
+          <div class="user-name">${u.name}</div>
+          <div class="user-last">Last active: ${lastStr}</div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-num">${sessions.length}</div><div class="stat-lbl">Sessions</div></div>
+        <div class="stat-box"><div class="stat-num">${lessons.length}</div><div class="stat-lbl">Lessons</div></div>
+        <div class="stat-box"><div class="stat-num">${quizzes.length}</div><div class="stat-lbl">Quizzes</div></div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-num">${today}</div><div class="stat-lbl">Today</div></div>
+        <div class="stat-box"><div class="stat-num">${days7}</div><div class="stat-lbl">Last 7 days</div></div>
+        <div class="stat-box"><div class="stat-num">${evts.length}</div><div class="stat-lbl">All time</div></div>
+      </div>
+      <div class="activity-bar">
+        <div class="activity-title">Last 7 days</div>
+        ${dayBars.map(d=>`<div class="day-row">
+          <div class="day-label">${d.label}</div>
+          <div class="day-bar-wrap"><div class="day-bar" style="width:${(d.count/maxDay)*100}%"></div></div>
+          <div class="day-count">${d.count}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Recent activity log (last 30)
+  const recent=allEvents.slice(-30).reverse();
+  const logHtml=recent.map(e=>{
+    const u=USERS.find(x=>x.id===e.u);
+    const labels={login:['👤','opened the app'],lesson:['📖','started a lesson'],quiz:['🎯','finished a quiz']};
+    const[emoji,text]=labels[e.e]||['❓',e.e];
+    const d=new Date(e.t);
+    const dateStr=d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    return`<div class="log-entry">
+      <div class="log-emoji">${emoji}</div>
+      <div class="log-text"><b>${u?u.name:'?'}</b> ${text}</div>
+      <div class="log-time">${dateStr}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML=`
+    <div class="users-grid">${cards}</div>
+    <div class="log-section">
+      <h3>RECENT ACTIVITY</h3>
+      ${logHtml||'<div style="color:rgba(255,255,255,0.3);font-size:12px">No events yet</div>'}
+    </div>`;
+}
+
+function timeAgo(ts){
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<60) return 'Just now';
+  if(s<3600) return Math.floor(s/60)+'m ago';
+  if(s<86400) return Math.floor(s/3600)+'h ago';
+  if(s<604800) return Math.floor(s/86400)+'d ago';
+  return new Date(ts).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+</script>
+</body>
+</html>

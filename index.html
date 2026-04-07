@@ -943,6 +943,18 @@ startLesson=function(id){trackEvent(cur.userId,'lesson');_origStartLesson(id);};
 const _origShowResult=showResult;
 showResult=function(){trackEvent(cur.userId,'quiz');_origShowResult();};
 
+// Track session end so the dashboard can compute time-in-app per login.
+// Uses sendBeacon because regular fetch is unreliable during page unload.
+window.addEventListener('beforeunload',function(){
+  if(!window._fbDb||!cur||!cur.userId) return;
+  const payload=JSON.stringify({u:cur.userId,e:'logout',t:Date.now()});
+  if(navigator.sendBeacon){
+    navigator.sendBeacon(window._fbDb+'/events.json',new Blob([payload],{type:'application/json'}));
+  }else{
+    fetch(window._fbDb+'/events.json',{method:'POST',body:payload,keepalive:true}).catch(()=>{});
+  }
+});
+
 /* ══════════════════════════════════
    INIT
 ══════════════════════════════════ */

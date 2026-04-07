@@ -59,6 +59,20 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff;min-height:
 .log-text b{color:#fff;font-weight:700;}
 .log-time{color:rgba(255,255,255,0.25);font-size:10px;white-space:nowrap;}
 .empty{text-align:center;color:rgba(255,255,255,0.25);font-size:14px;padding:40px;}
+
+.toggle-row{text-align:center;margin-bottom:20px;}
+.toggle-btn{background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.4);border-radius:10px;padding:8px 20px;color:var(--purple);font-size:13px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;}
+.toggle-btn:hover{background:rgba(167,139,250,0.25);}
+.toggle-btn.active{background:var(--purple);color:#fff;}
+.history-panel{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);}
+.history-title{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.history-title span:first-child{color:rgba(255,255,255,0.4);font-size:11px;font-weight:700;letter-spacing:0.5px;}
+.history-total{color:var(--green);font-weight:900;font-size:14px;}
+.history-list{max-height:180px;overflow-y:auto;}
+.history-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:11px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.history-when{color:rgba(255,255,255,0.65);}
+.history-dur{color:var(--gold);font-weight:700;}
+.history-dur.est{color:rgba(247,201,72,0.5);}
 </style>
 </head>
 <body>
@@ -95,6 +109,10 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff;min-height:
     <span class="auto-label">Auto-refreshes every 30 seconds</span>
   </div>
 
+  <div class="toggle-row" id="toggleRow" style="display:none">
+    <button class="toggle-btn" id="historyBtn" onclick="toggleHistory()">Show login history & time used</button>
+  </div>
+
   <div id="content"><div class="empty">Enter your Firebase URL above to get started</div></div>
 </div>
 
@@ -107,6 +125,7 @@ const USERS=[
 let fbBase='';
 let allEvents=[];
 let autoTimer=null;
+let showHistory=localStorage.getItem('su_dash_history')==='1';
 
 // Persist the URL so you don't have to paste it every time
 (function loadSaved(){
@@ -129,8 +148,24 @@ function connect(){
   setStatus('Connecting...','');
   fetchData();
   document.getElementById('refreshRow').style.display='block';
+  document.getElementById('toggleRow').style.display='block';
+  updateHistoryBtn();
   if(autoTimer) clearInterval(autoTimer);
   autoTimer=setInterval(fetchData,30000);
+}
+
+function toggleHistory(){
+  showHistory=!showHistory;
+  localStorage.setItem('su_dash_history',showHistory?'1':'0');
+  updateHistoryBtn();
+  render();
+}
+
+function updateHistoryBtn(){
+  const btn=document.getElementById('historyBtn');
+  if(!btn) return;
+  btn.textContent=showHistory?'Hide login history & time used':'Show login history & time used';
+  btn.classList.toggle('active',showHistory);
 }
 
 function setStatus(msg,cls){
@@ -158,7 +193,9 @@ function render(){
   const now=Date.now();
   // User cards
   let cards=USERS.map(u=>{
-    const evts=allEvents.filter(e=>e.u===u.id);
+    const allUserEvts=allEvents.filter(e=>e.u===u.id);
+    // Logout events are session-end markers, not user activity — exclude from counts/charts
+    const evts=allUserEvts.filter(e=>e.e!=='logout');
     const sessions=evts.filter(e=>e.e==='login');
     const lessons=evts.filter(e=>e.e==='lesson');
     const quizzes=evts.filter(e=>e.e==='quiz');
@@ -204,11 +241,12 @@ function render(){
           <div class="day-count">${d.count}</div>
         </div>`).join('')}
       </div>
+      ${showHistory?renderHistoryPanel(allUserEvts):''}
     </div>`;
   }).join('');
 
-  // Recent activity log (last 30)
-  const recent=allEvents.slice(-30).reverse();
+  // Recent activity log (last 30) — skip logout markers
+  const recent=allEvents.filter(e=>e.e!=='logout').slice(-30).reverse();
   const logHtml=recent.map(e=>{
     const u=USERS.find(x=>x.id===e.u);
     const labels={login:['👤','opened the app'],lesson:['📖','started a lesson'],quiz:['🎯','finished a quiz']};
@@ -237,6 +275,75 @@ function timeAgo(ts){
   if(s<86400) return Math.floor(s/3600)+'h ago';
   if(s<604800) return Math.floor(s/86400)+'d ago';
   return new Date(ts).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+
+// Pair each login event with its session-end. Prefer an explicit logout
+// (sent on page unload). Fall back to the last in-session activity for older
+// data or sessions where the browser was killed without firing beforeunload.
+// Sessions are capped at 2h to avoid runaway estimates.
+const SESSION_CAP_MS=2*60*60*1000;
+function buildSessions(evts){
+  const sorted=evts.slice().sort((a,b)=>a.t-b.t);
+  const logins=sorted.filter(e=>e.e==='login');
+  const out=[];
+  for(let i=0;i<logins.length;i++){
+    const start=logins[i].t;
+    const nextLoginT=i+1<logins.length?logins[i+1].t:Infinity;
+    const inWindow=sorted.filter(e=>e.t>start&&e.t<nextLoginT);
+    const logout=inWindow.find(e=>e.e==='logout');
+    let end,estimated;
+    if(logout){
+      end=logout.t;estimated=false;
+    }else{
+      const otherActivity=inWindow.filter(e=>e.e!=='login');
+      if(otherActivity.length){
+        // assume they stayed ~1 minute past their last lesson/quiz
+        end=otherActivity[otherActivity.length-1].t+60000;
+      }else{
+        // login with no further events: assume 1 minute
+        end=start+60000;
+      }
+      estimated=true;
+    }
+    if(end-start>SESSION_CAP_MS) end=start+SESSION_CAP_MS;
+    if(end<start) end=start;
+    out.push({start,end,duration:end-start,estimated});
+  }
+  return out;
+}
+
+function fmtDuration(ms){
+  const s=Math.floor(ms/1000);
+  if(s<60) return s+'s';
+  const m=Math.floor(s/60);
+  if(m<60) return m+'m';
+  const h=Math.floor(m/60);
+  const rm=m%60;
+  return rm?h+'h '+rm+'m':h+'h';
+}
+
+function renderHistoryPanel(evts){
+  const sessions=buildSessions(evts);
+  if(!sessions.length){
+    return`<div class="history-panel">
+      <div class="history-title"><span>LOGIN HISTORY</span><span class="history-total">0m</span></div>
+      <div style="color:rgba(255,255,255,0.3);font-size:11px">No logins yet</div>
+    </div>`;
+  }
+  const total=sessions.reduce((a,s)=>a+s.duration,0);
+  const rows=sessions.slice().reverse().map(s=>{
+    const d=new Date(s.start);
+    const when=d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    const durCls='history-dur'+(s.estimated?' est':'');
+    const durTxt=fmtDuration(s.duration)+(s.estimated?'*':'');
+    return`<div class="history-row"><div class="history-when">${when}</div><div class="${durCls}" title="${s.estimated?'Estimated (no logout recorded)':'Measured'}">${durTxt}</div></div>`;
+  }).join('');
+  const hasEstimated=sessions.some(s=>s.estimated);
+  return`<div class="history-panel">
+    <div class="history-title"><span>LOGIN HISTORY (${sessions.length})</span><span class="history-total">Total: ${fmtDuration(total)}</span></div>
+    <div class="history-list">${rows}</div>
+    ${hasEstimated?'<div style="color:rgba(255,255,255,0.25);font-size:10px;margin-top:6px">* estimated — older sessions before logout tracking, or browser closed without warning</div>':''}
+  </div>`;
 }
 </script>
 </body>

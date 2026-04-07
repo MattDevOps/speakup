@@ -71,6 +71,7 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff;min-height:
 .history-list{max-height:180px;overflow-y:auto;}
 .history-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:11px;border-bottom:1px solid rgba(255,255,255,0.04);}
 .history-when{color:rgba(255,255,255,0.65);}
+.history-loc{color:rgba(255,255,255,0.35);font-size:10px;margin-top:2px;}
 .history-dur{color:var(--gold);font-weight:700;}
 .history-dur.est{color:rgba(247,201,72,0.5);}
 </style>
@@ -287,7 +288,8 @@ function buildSessions(evts){
   const logins=sorted.filter(e=>e.e==='login');
   const out=[];
   for(let i=0;i<logins.length;i++){
-    const start=logins[i].t;
+    const login=logins[i];
+    const start=login.t;
     const nextLoginT=i+1<logins.length?logins[i+1].t:Infinity;
     const inWindow=sorted.filter(e=>e.t>start&&e.t<nextLoginT);
     const logout=inWindow.find(e=>e.e==='logout');
@@ -307,9 +309,21 @@ function buildSessions(evts){
     }
     if(end-start>SESSION_CAP_MS) end=start+SESSION_CAP_MS;
     if(end<start) end=start;
-    out.push({start,end,duration:end-start,estimated});
+    out.push({start,end,duration:end-start,estimated,ip:login.ip,city:login.city,region:login.region,country:login.country,device:login.d});
   }
   return out;
+}
+
+function fmtLocation(s){
+  const parts=[];
+  if(s.city) parts.push(s.city);
+  if(s.region&&s.region!==s.city) parts.push(s.region);
+  if(s.country) parts.push(s.country);
+  const place=parts.join(', ');
+  const bits=[];
+  if(place) bits.push(place);
+  if(s.ip) bits.push(s.ip);
+  return bits.join(' · ');
 }
 
 function fmtDuration(ms){
@@ -336,7 +350,10 @@ function renderHistoryPanel(evts){
     const when=d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
     const durCls='history-dur'+(s.estimated?' est':'');
     const durTxt=fmtDuration(s.duration)+(s.estimated?'*':'');
-    return`<div class="history-row"><div class="history-when">${when}</div><div class="${durCls}" title="${s.estimated?'Estimated (no logout recorded)':'Measured'}">${durTxt}</div></div>`;
+    const loc=fmtLocation(s);
+    const devHtml=s.device?`<div class="history-loc">💻 ${s.device}</div>`:'';
+    const locHtml=loc?`<div class="history-loc">📍 ${loc}</div>`:'';
+    return`<div class="history-row"><div class="history-when"><div>${when}</div>${devHtml}${locHtml}</div><div class="${durCls}" title="${s.estimated?'Estimated (no logout recorded)':'Measured'}">${durTxt}</div></div>`;
   }).join('');
   const hasEstimated=sessions.some(s=>s.estimated);
   return`<div class="history-panel">

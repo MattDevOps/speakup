@@ -924,16 +924,50 @@ function retryQuiz(){startQuiz();}
 /* ══════════════════════════════════
    USAGE TRACKING (Firebase)
 ══════════════════════════════════ */
-function trackEvent(userId,event){
+function trackEvent(userId,event,extra){
   if(!window._fbDb) return;
   const ref=window._fbDb+'/events.json';
-  const payload=JSON.stringify({u:userId,e:event,t:Date.now()});
+  const payload=JSON.stringify(Object.assign({u:userId,e:event,t:Date.now()},extra||{}));
   fetch(ref,{method:'POST',body:payload}).catch(()=>{});
+}
+
+// Build a short device hint like "iPhone Safari" or "Windows Chrome" so we
+// can distinguish devices behind the same router (where IPs would match).
+function deviceHint(){
+  const ua=navigator.userAgent||'';
+  let os='';
+  if(/iPhone|iPod/.test(ua)) os='iPhone';
+  else if(/iPad/.test(ua)) os='iPad';
+  else if(/Android/.test(ua)) os='Android';
+  else if(/Windows/.test(ua)) os='Windows';
+  else if(/Mac OS X/.test(ua)) os='Mac';
+  else if(/Linux/.test(ua)) os='Linux';
+  let br='';
+  if(/Edg\//.test(ua)) br='Edge';
+  else if(/OPR\/|Opera/.test(ua)) br='Opera';
+  else if(/Chrome\//.test(ua)) br='Chrome';
+  else if(/Firefox\//.test(ua)) br='Firefox';
+  else if(/Safari\//.test(ua)) br='Safari';
+  return [os,br].filter(Boolean).join(' ')||'Unknown';
+}
+
+// Logins are tagged with IP/location so the dashboard can tell which device
+// they signed in from. Uses ipwho.is (free, no API key, CORS-enabled).
+async function trackLogin(userId){
+  let info={d:deviceHint()};
+  try{
+    const r=await fetch('https://ipwho.is/');
+    const j=await r.json();
+    if(j&&j.success!==false){
+      info.ip=j.ip;info.city=j.city;info.region=j.region;info.country=j.country;
+    }
+  }catch(e){}
+  trackEvent(userId,'login',info);
 }
 
 // Patch selectUser to track logins
 const _origSelectUser=selectUser;
-selectUser=function(id){trackEvent(id,'login');_origSelectUser(id);};
+selectUser=function(id){trackLogin(id);_origSelectUser(id);};
 
 // Patch startLesson to track lessons
 const _origStartLesson=startLesson;

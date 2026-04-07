@@ -589,11 +589,20 @@ const PERSONAL_MSGS={
   shira: {e:'We will be very successful',h:'אנחנו נצליח מאוד',x:'Believe it — we will be very successful.'},
   sara:  {e:'We will get married',h:'אנחנו נתחתן',x:'One day, we will get married.'},
 };
+const PERSONAL_FEELINGS={
+  shlomo:{e:'I love winning',h:'אני אוהב לנצח',x:'I love winning at everything I do!'},
+  shira: {e:'I love dancing',h:'אני אוהבת לרקוד',x:'I love dancing more than anything!'},
+  sara:  {e:'I love you',h:'אני אוהבת אותך',x:'I love you with all my heart.'},
+};
 function lessonsFor(uid,level){
   const base=LESSONS[level];
-  if(level!=='intermediate'||!uid||!PERSONAL_MSGS[uid]) return base;
-  // Inject the per-user personal phrase as the first word of "Useful Phrases" (verbs)
-  return base.map(l=>l.id==='verbs'?{...l,words:[PERSONAL_MSGS[uid],...l.words]}:l);
+  if(level!=='intermediate'||!uid) return base;
+  // Inject per-user personal phrases into "Useful Phrases" (verbs) and "Feelings"
+  return base.map(l=>{
+    if(l.id==='verbs'   && PERSONAL_MSGS[uid])     return {...l,words:[PERSONAL_MSGS[uid],...l.words]};
+    if(l.id==='feelings'&& PERSONAL_FEELINGS[uid]) return {...l,words:[PERSONAL_FEELINGS[uid],...l.words]};
+    return l;
+  });
 }
 function lm(){return LEVEL_META[cur.level];}
 function save(){try{localStorage.setItem('su_v1',JSON.stringify(data));}catch(e){}}

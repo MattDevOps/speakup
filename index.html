@@ -186,6 +186,30 @@ html,body{height:100%;width:100%;background:var(--bg);font-family:'Nunito',sans-
 @keyframes fIn{0%{transform:translateY(7px);opacity:0}100%{transform:translateY(0);opacity:1}}
 .fin{animation:fIn 0.22s ease;}
 
+/* VOICE SETTINGS */
+.set-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);font-size:15px;cursor:pointer;flex-shrink:0;transition:transform 0.12s;}
+.set-btn:active{transform:scale(0.92);}
+.hdr-right{display:flex;align-items:center;gap:8px;}
+.modal-back{position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:200;padding:18px;}
+.modal-back.on{display:flex;animation:fIn 0.18s ease;}
+.modal{background:linear-gradient(160deg,#1a2845,#0d1f3a);border:1px solid rgba(255,255,255,0.18);border-radius:24px;padding:22px 20px;width:100%;max-width:380px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+.modal h2{color:#fff;font-weight:900;font-size:21px;margin-bottom:4px;}
+.modal-sub{color:rgba(255,255,255,0.42);font-size:12px;font-family:'Rubik',sans-serif;direction:rtl;margin-bottom:16px;}
+.modal label{display:block;color:rgba(255,255,255,0.55);font-size:11px;font-weight:800;margin:14px 0 6px;text-transform:uppercase;letter-spacing:0.8px;}
+.modal select{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:14px;padding:13px 14px;color:#fff;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%23ffffff88' d='M6 8L0 0h12z'/></svg>");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+.modal select option{background:#0f1e35;color:#fff;}
+.modal input[type=range]{width:100%;-webkit-appearance:none;appearance:none;background:transparent;height:24px;}
+.modal input[type=range]::-webkit-slider-runnable-track{height:6px;background:rgba(255,255,255,0.18);border-radius:3px;}
+.modal input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--gold);margin-top:-8px;cursor:pointer;border:2px solid #1a2845;}
+.modal input[type=range]::-moz-range-track{height:6px;background:rgba(255,255,255,0.18);border-radius:3px;}
+.modal input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--gold);border:2px solid #1a2845;cursor:pointer;}
+.modal-row{display:flex;justify-content:space-between;align-items:center;color:rgba(255,255,255,0.45);font-size:11px;margin-top:2px;font-weight:600;}
+.modal-row b{color:var(--gold);font-weight:800;}
+.modal-test{width:100%;background:linear-gradient(135deg,rgba(74,222,128,0.2),rgba(34,197,94,0.14));border:1px solid rgba(74,222,128,0.45);color:#86efac;border-radius:14px;padding:13px;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;cursor:pointer;margin-top:14px;-webkit-appearance:none;}
+.modal-test:active{transform:scale(0.97);}
+.modal-note{color:rgba(255,255,255,0.36);font-size:11px;line-height:1.55;margin-top:14px;font-family:'Rubik',sans-serif;direction:rtl;text-align:right;border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;}
+.modal-actions{display:flex;gap:9px;margin-top:14px;}
+
 </style>
 </head>
 <body>
@@ -198,7 +222,28 @@ html,body{height:100%;width:100%;background:var(--bg);font-family:'Nunito',sans-
         <div class="logo-sub" id="hSub">לדבר אנגלית בקלות</div>
       </div>
     </div>
-    <div class="star-pill"><span>⭐</span><span id="starCount">0</span></div>
+    <div class="hdr-right">
+      <button class="set-btn" id="setBtn" onclick="openVoiceModal()" aria-label="Voice settings">🔊</button>
+      <div class="star-pill"><span>⭐</span><span id="starCount">0</span></div>
+    </div>
+  </div>
+
+  <!-- Voice settings modal -->
+  <div class="modal-back" id="voiceModal" onclick="if(event.target===this)closeVoiceModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h2>🔊 Voice Settings</h2>
+      <div class="modal-sub">בחר קול ומהירות דיבור באנגלית</div>
+      <label>English Voice • קול אנגלי</label>
+      <select id="voiceSelect" onchange="onVoiceChange()"></select>
+      <label>Speed • מהירות דיבור</label>
+      <input type="range" id="rateRange" min="0.6" max="1.2" step="0.05" oninput="onRateChange()">
+      <div class="modal-row"><span>Slower</span><b id="rateLabel">0.90×</b><span>Faster</span></div>
+      <button class="modal-test" onclick="testVoice()">▶ Test this voice • שמע דוגמה</button>
+      <p class="modal-note">קולות אמריקאים טבעיים בלבד. בחר קול גברי 👨 או נשי 👩 שאת/ה אוהב/ת. ✨ = איכות הכי גבוהה.</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" style="width:100%" onclick="closeVoiceModal()">סגור • Close</button>
+      </div>
+    </div>
   </div>
 
   <div class="scroll" id="scroll">
@@ -539,6 +584,17 @@ let data={
 let cur={userId:null,level:null,lesson:null,ci:0,qq:[],qi:0,qs:0,streak:0,fa:false,quizMode:'speak',recognizing:false,spokenText:''};
 function ud(){return data[cur.userId][cur.level];}
 function user(){return USERS.find(u=>u.id===cur.userId);}
+const PERSONAL_MSGS={
+  shlomo:{e:'We are great friends',h:'אנחנו חברים טובים',x:'You and I, we are great friends.'},
+  shira: {e:'We will be very successful',h:'אנחנו נצליח מאוד',x:'Believe it — we will be very successful.'},
+  sara:  {e:'We will get married',h:'אנחנו נתחתן',x:'One day, we will get married.'},
+};
+function lessonsFor(uid,level){
+  const base=LESSONS[level];
+  if(level!=='intermediate'||!uid||!PERSONAL_MSGS[uid]) return base;
+  // Inject the per-user personal phrase as the first word of "Useful Phrases" (verbs)
+  return base.map(l=>l.id==='verbs'?{...l,words:[PERSONAL_MSGS[uid],...l.words]}:l);
+}
 function lm(){return LEVEL_META[cur.level];}
 function save(){try{localStorage.setItem('su_v1',JSON.stringify(data));}catch(e){}}
 function load(){try{const d=JSON.parse(localStorage.getItem('su_v1'));if(d){USERS.forEach(u=>{if(d[u.id])Object.keys(LEVEL_META).forEach(k=>{if(d[u.id][k]&&!d[u.id][k].progress)d[u.id][k].progress={};});});data=d;}}catch(e){}}
@@ -557,21 +613,180 @@ function wrongMsg(){return WRONG_MSGS[Math.floor(Math.random()*WRONG_MSGS.length
    SPEECH SYNTHESIS (TTS)
 ══════════════════════════════════ */
 let voices=[];
+const VOICE_KEY='su_voice_v1';
+const RATE_KEY='su_rate_v1';
+let chosenVoiceName=null;
+let speechRate=0.9;
+
+// Curated American voices only — a small handpicked list of natural-sounding
+// voices, no robotic ones. Mix of men and women. Names below cover the most
+// common high-quality voices across Chrome, Edge, Safari, iOS, and Android.
+const FEMALE_NAMES=/\b(aria|jenny|michelle|ana|samantha|ava|allison|susan|nicky|joanna|kimberly|salli|ivy|kendra|joey|emma|olivia)\b/i;
+const MALE_NAMES  =/\b(guy|davis|tony|brandon|christopher|eric|roger|tom|aaron|matthew|justin|kevin|noah|liam)\b/i;
+const QUALITY_RE  =/natural|neural|premium|enhanced/i;
+const ROBOT_RE    =/espeak|fred|albert|bahh|bells|boing|bubbles|cellos|deranged|hysterical|junior|kathy|pipe organ|princess|ralph|trinoids|whisper|zarvox|good news|bad news|cellos|organ|wobble|trinoids/i;
+
+function voiceGender(name){
+  if(FEMALE_NAMES.test(name)) return 'F';
+  if(MALE_NAMES.test(name))   return 'M';
+  return null;
+}
+
+// Score a voice. Higher = more natural sounding.
+function scoreVoice(v){
+  const n=(v.name||'');
+  const lang=(v.lang||'').toLowerCase();
+  if(lang!=='en-us') return -999;
+  if(ROBOT_RE.test(n)) return -999;
+  let s=0;
+  if(/natural/i.test(n))  s+=60;
+  if(/neural/i.test(n))   s+=55;
+  if(/premium/i.test(n))  s+=45;
+  if(/enhanced/i.test(n)) s+=35;
+  if(/online/i.test(n))   s+=25;
+  if(/google/i.test(n))   s+=20;
+  if(voiceGender(n))      s+=15;
+  // Penalize the older "Desktop" Windows voices which are robotic even though en-US
+  if(/\bdesktop\b/i.test(n)) s-=40;
+  if(/microsoft (david|zira|mark|hazel)\b/i.test(n)&&!/natural/i.test(n)) s-=20;
+  return s;
+}
+
+// Returns the curated list shown in the picker. Strict filter: en-US,
+// not robotic, and either named (gender-identified) or marked Natural/Neural.
+// Capped at 6 voices with gender diversity.
+function curatedVoices(){
+  const out=[];
+  voices.forEach(v=>{
+    const lang=(v.lang||'').toLowerCase();
+    const name=v.name||'';
+    if(lang!=='en-us') return;
+    if(ROBOT_RE.test(name)) return;
+    if(/\bdesktop\b/i.test(name)) return;
+    const gender=voiceGender(name);
+    const isQuality=QUALITY_RE.test(name);
+    // Must be a recognized good-quality voice OR a named voice
+    if(!gender&&!isQuality&&!/google us english/i.test(name)) return;
+    out.push({v,gender,score:scoreVoice(v),quality:isQuality});
+  });
+  out.sort((a,b)=>b.score-a.score);
+  // Diversity cap: keep up to 3 female + 3 male + 1 neutral, max 6 total
+  const F=out.filter(x=>x.gender==='F').slice(0,3);
+  const M=out.filter(x=>x.gender==='M').slice(0,3);
+  const N=out.filter(x=>!x.gender).slice(0,1);
+  return [...F,...M,...N].sort((a,b)=>b.score-a.score).slice(0,6);
+}
+
+function pickBestVoice(){
+  if(!voices.length) return null;
+  const curated=curatedVoices();
+  if(curated.length) return curated[0].v;
+  // Fallback: any en-US voice that isn't obviously robotic
+  const fallback=voices.filter(v=>(v.lang||'').toLowerCase()==='en-us'&&!ROBOT_RE.test(v.name||''));
+  if(fallback.length) return fallback[0];
+  // Last resort: any English voice
+  return voices.find(v=>(v.lang||'').toLowerCase().startsWith('en'))||null;
+}
+
+function currentVoice(){
+  if(chosenVoiceName){
+    const v=voices.find(x=>x.name===chosenVoiceName);
+    if(v) return v;
+  }
+  return pickBestVoice();
+}
+
+function loadVoicePref(){
+  try{
+    const v=localStorage.getItem(VOICE_KEY); if(v) chosenVoiceName=v;
+    const r=parseFloat(localStorage.getItem(RATE_KEY)); if(!isNaN(r)&&r>=0.5&&r<=1.5) speechRate=r;
+  }catch(e){}
+}
+function saveVoicePref(){
+  try{
+    if(chosenVoiceName) localStorage.setItem(VOICE_KEY,chosenVoiceName);
+    localStorage.setItem(RATE_KEY,String(speechRate));
+  }catch(e){}
+}
+loadVoicePref();
+
 function loadVoices(){
-  voices=window.speechSynthesis.getVoices();
+  voices=window.speechSynthesis.getVoices()||[];
+  // If the picker modal is open, refresh it (Chrome populates voices async)
+  const m=document.getElementById('voiceModal');
+  if(m&&m.classList.contains('on')) renderVoiceModal();
 }
 window.speechSynthesis.onvoiceschanged=loadVoices;
 loadVoices();
 
 function speak(text, onEnd){
   window.speechSynthesis.cancel();
+  // Chrome quirk: voices may not be ready on first call. Try again shortly.
+  if(!voices.length){
+    voices=window.speechSynthesis.getVoices()||[];
+    if(!voices.length){ setTimeout(()=>speak(text,onEnd),120); return; }
+  }
   const u=new SpeechSynthesisUtterance(text);
-  u.lang='en-US'; u.rate=0.85; u.pitch=1;
-  // prefer a native English voice
-  const eng=voices.find(v=>v.lang.startsWith('en')&&!v.name.includes('Google'))||voices.find(v=>v.lang.startsWith('en'));
-  if(eng) u.voice=eng;
+  u.rate=speechRate; u.pitch=1;
+  const v=currentVoice();
+  if(v){ u.voice=v; u.lang=v.lang||'en-US'; }
+  else { u.lang='en-US'; }
   if(onEnd) u.onend=onEnd;
   window.speechSynthesis.speak(u);
+}
+
+/* Voice picker modal */
+function openVoiceModal(){
+  loadVoices();
+  renderVoiceModal();
+  document.getElementById('voiceModal').classList.add('on');
+}
+function closeVoiceModal(){
+  window.speechSynthesis.cancel();
+  document.getElementById('voiceModal').classList.remove('on');
+}
+function renderVoiceModal(){
+  const sel=document.getElementById('voiceSelect');
+  if(!sel) return;
+  const curated=curatedVoices();
+  if(!curated.length){
+    sel.innerHTML='<option>(no high-quality American voices found on this device)</option>';
+  } else {
+    const cur=currentVoice();
+    // Friendly label: "👩 Aria (Natural)" / "👨 Guy (Natural)"
+    sel.innerHTML=curated.map(({v,gender,quality})=>{
+      const icon=gender==='F'?'👩':gender==='M'?'👨':'🔊';
+      // Clean up the display name a bit — strip "Microsoft", "Google", "(en-US)"
+      let label=v.name
+        .replace(/Microsoft\s+/i,'')
+        .replace(/Google\s+/i,'')
+        .replace(/\s*\(.*?\)\s*/g,'')
+        .replace(/\s+Online$/i,'')
+        .replace(/\s+-\s+English.*$/i,'')
+        .trim();
+      const tag=quality?' ✨':'';
+      const isSel=cur&&v.name===cur.name?'selected':'';
+      const safeName=v.name.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+      const safeLabel=label.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      return `<option value="${safeName}" ${isSel}>${icon} ${safeLabel}${tag}</option>`;
+    }).join('');
+  }
+  document.getElementById('rateRange').value=speechRate;
+  document.getElementById('rateLabel').textContent=speechRate.toFixed(2)+'×';
+}
+function onVoiceChange(){
+  chosenVoiceName=document.getElementById('voiceSelect').value;
+  saveVoicePref();
+  // Auto-play a short sample so the user hears the change immediately
+  testVoice();
+}
+function onRateChange(){
+  speechRate=parseFloat(document.getElementById('rateRange').value)||0.9;
+  document.getElementById('rateLabel').textContent=speechRate.toFixed(2)+'×';
+  saveVoicePref();
+}
+function testVoice(){
+  speak("Hello! I am your English teacher. Let's practice speaking together.");
 }
 
 /* ══════════════════════════════════
@@ -661,7 +876,7 @@ function renderProfiles(){
   document.getElementById('profileList').innerHTML=USERS.map(u=>{
     const ud2=data[u.id];
     const pips=Object.entries(LEVEL_META).map(([k,m])=>{
-      const d=ud2[k],total=LESSONS[k].length;
+      const d=ud2[k],total=lessonsFor(u.id,k).length;
       return`<span class="lvl-pip ${m.pip}">${m.icon} ${d.done.length}/${total}</span>`;
     }).join('');
     const total=ud2.beginner.stars+ud2.intermediate.stars+ud2.advanced.stars;
@@ -686,7 +901,7 @@ function renderLevels(){
   document.getElementById('lvlAv').textContent=u.emoji;
   document.getElementById('lvlName').textContent=u.name;
   document.getElementById('levelList').innerHTML=Object.entries(LEVEL_META).map(([k,m])=>{
-    const ud2=data[cur.userId][k],total=LESSONS[k].length,done=ud2.done.length,pct=total?Math.round(done/total*100):0;
+    const ud2=data[cur.userId][k],total=lessonsFor(cur.userId,k).length,done=ud2.done.length,pct=total?Math.round(done/total*100):0;
     return`<div class="${m.lc} lvl-card" onclick="selectLevel('${k}')">
       <div class="lvl-top">
         <div class="lvl-title">${m.icon} ${m.label} <span style="font-size:14px;color:rgba(255,255,255,0.35);font-family:'Rubik',sans-serif">${m.labelHe}</span></div>
@@ -706,7 +921,7 @@ function selectLevel(level){cur.level=level;updateHeader();renderHome();show('s-
    HOME
 ══════════════════════════════════ */
 function renderHome(){
-  const u=user(),m=lm(),ud2=ud(),ls=LESSONS[cur.level];
+  const u=user(),m=lm(),ud2=ud(),ls=lessonsFor(cur.userId,cur.level);
   document.getElementById('homeHdr').innerHTML=`
     <div class="hh-av">${u.emoji}</div>
     <div style="flex:1">
@@ -734,7 +949,7 @@ function renderHome(){
    LESSON (listen & repeat)
 ══════════════════════════════════ */
 function startLesson(id){
-  cur.lesson=LESSONS[cur.level].find(l=>l.id===id);
+  cur.lesson=lessonsFor(cur.userId,cur.level).find(l=>l.id===id);
   cur.ci=0; cur.reviewed=new Set(); updateCard(); show('s-lesson');
 }
 function updateCard(){
@@ -800,7 +1015,7 @@ function nextCard(){window.speechSynthesis.cancel();stopListening();if(cur.ci<cu
    QUIZ
 ══════════════════════════════════ */
 function startQuiz(){
-  const words=cur.lesson.words,pool=LESSONS[cur.level].flatMap(l=>l.words);
+  const words=cur.lesson.words,pool=lessonsFor(cur.userId,cur.level).flatMap(l=>l.words);
   cur.qq=shuffle(words).map(word=>{
     const wrong=shuffle(pool.filter(w=>w.e!==word.e)).slice(0,3).map(w=>w.e);
     return{word,options:shuffle([word.e,...wrong])};
@@ -911,7 +1126,7 @@ function showResult(){
   document.getElementById('rTitle').textContent=msgs[cur.level][3-earned];
   document.getElementById('rScore').textContent=`${sc} / ${t} correct`;
   ['st1','st2','st3'].forEach((id,i)=>{const el=document.getElementById(id);el.className='si';if(i<earned)setTimeout(()=>el.className='si on',i*220+150);});
-  const all=LESSONS[cur.level],xb=document.getElementById('xpBox');
+  const all=lessonsFor(cur.userId,cur.level),xb=document.getElementById('xpBox');
   if(wasNew&&ud2.done.length===all.length){xb.style.display='block';document.getElementById('xpT').textContent='🎓 Level complete!';document.getElementById('xpSub').textContent='כל השיעורים ב-'+lm().labelHe+' הושלמו!';}
   else if(wasNew){xb.style.display='block';document.getElementById('xpT').textContent=`+${earned} ⭐ earned!`;document.getElementById('xpSub').textContent=`${ud2.done.length}/${all.length} שיעורים הושלמו`;}
   else xb.style.display='none';
@@ -969,13 +1184,14 @@ async function trackLogin(userId){
 const _origSelectUser=selectUser;
 selectUser=function(id){trackLogin(id);_origSelectUser(id);};
 
-// Patch startLesson to track lessons
+// Patch startLesson to track lessons (include lesson id + level so the dashboard
+// can show exactly which lessons each user has opened)
 const _origStartLesson=startLesson;
-startLesson=function(id){trackEvent(cur.userId,'lesson');_origStartLesson(id);};
+startLesson=function(id){trackEvent(cur.userId,'lesson',{lid:id,lvl:cur.level});_origStartLesson(id);};
 
-// Patch showResult to track quiz completions
+// Patch showResult to track quiz completions (include lesson id + level)
 const _origShowResult=showResult;
-showResult=function(){trackEvent(cur.userId,'quiz');_origShowResult();};
+showResult=function(){trackEvent(cur.userId,'quiz',{lid:cur.lesson&&cur.lesson.id,lvl:cur.level});_origShowResult();};
 
 // Track session end so the dashboard can compute time-in-app per login.
 // Uses sendBeacon because regular fetch is unreliable during page unload.

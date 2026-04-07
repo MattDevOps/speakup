@@ -74,6 +74,31 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff;min-height:
 .history-loc{color:rgba(255,255,255,0.35);font-size:10px;margin-top:2px;}
 .history-dur{color:var(--gold);font-weight:700;}
 .history-dur.est{color:rgba(247,201,72,0.5);}
+
+/* LESSONS PANEL */
+.personal-banner{background:linear-gradient(135deg,rgba(255,107,107,0.18),rgba(247,201,72,0.12));border:1px solid rgba(255,107,107,0.4);border-radius:14px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:12px;}
+.personal-banner.seen{background:linear-gradient(135deg,rgba(74,222,128,0.18),rgba(34,197,94,0.1));border-color:rgba(74,222,128,0.45);}
+.personal-icon{font-size:24px;flex-shrink:0;}
+.personal-text{flex:1;font-size:12px;line-height:1.4;}
+.personal-text b{display:block;color:#fff;font-size:13px;margin-bottom:2px;}
+.personal-text .seen-msg{color:var(--green);font-weight:700;}
+.personal-text .miss-msg{color:var(--coral);font-weight:700;}
+.personal-text .meta{color:rgba(255,255,255,0.5);}
+.lessons-panel{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);}
+.lessons-title{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.lessons-title span:first-child{color:rgba(255,255,255,0.4);font-size:11px;font-weight:700;letter-spacing:0.5px;}
+.lessons-total{color:var(--blue);font-weight:900;font-size:14px;}
+.lvl-group{margin-top:8px;}
+.lvl-group-hdr{color:rgba(255,255,255,0.5);font-size:10px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;margin:6px 0 4px;}
+.lesson-row-d{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;font-size:11px;border-radius:8px;margin-bottom:2px;background:rgba(255,255,255,0.03);}
+.lesson-row-d.highlight{background:rgba(255,107,107,0.15);border:1px solid rgba(255,107,107,0.35);}
+.lesson-row-d.done{background:rgba(74,222,128,0.1);}
+.lesson-row-d.highlight.done{background:rgba(74,222,128,0.18);border-color:rgba(74,222,128,0.45);}
+.lesson-name{color:rgba(255,255,255,0.8);font-weight:600;}
+.lesson-name .star{margin-right:4px;}
+.lesson-counts{color:rgba(255,255,255,0.45);font-size:10px;display:flex;gap:8px;}
+.lesson-counts b{color:var(--gold);font-weight:800;}
+.lesson-counts b.done{color:var(--green);}
 </style>
 </head>
 <body>
@@ -112,6 +137,7 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff;min-height:
 
   <div class="toggle-row" id="toggleRow" style="display:none">
     <button class="toggle-btn" id="historyBtn" onclick="toggleHistory()">Show login history & time used</button>
+    <button class="toggle-btn" id="lessonsBtn" onclick="toggleLessons()" style="margin-left:8px">Show lessons completed</button>
   </div>
 
   <div id="content"><div class="empty">Enter your Firebase URL above to get started</div></div>
@@ -127,6 +153,42 @@ let fbBase='';
 let allEvents=[];
 let autoTimer=null;
 let showHistory=localStorage.getItem('su_dash_history')==='1';
+let showLessons=localStorage.getItem('su_dash_lessons')==='1';
+
+// Lesson catalog mirrors the lessons defined in index.html. The personal
+// message lives at intermediate/verbs as the FIRST flashcard, so opening
+// that lesson means the user has seen it.
+const LESSON_CATALOG={
+  beginner:[
+    {id:'greetings',name:'Greetings',emoji:'👋'},
+    {id:'family',   name:'Family',   emoji:'👨‍👩‍👧'},
+    {id:'food',     name:'Food',     emoji:'🍕'},
+    {id:'weather',  name:'Weather',  emoji:'☀️'},
+    {id:'body',     name:'Body',     emoji:'👤'},
+  ],
+  intermediate:[
+    {id:'verbs',    name:'Useful Phrases', emoji:'⚡', personal:true},
+    {id:'time',     name:'Time & Days',    emoji:'🕐'},
+    {id:'travel',   name:'Travel',         emoji:'✈️'},
+    {id:'shopping', name:'Shopping',       emoji:'🛒'},
+    {id:'feelings', name:'Feelings',       emoji:'😊'},
+    {id:'health',   name:'Health',         emoji:'🏥'},
+  ],
+  advanced:[
+    {id:'idioms',       name:'Common Idioms',  emoji:'💬'},
+    {id:'business',     name:'Business Talk',  emoji:'💼'},
+    {id:'smalltalk',    name:'Small Talk',     emoji:'🌍'},
+    {id:'conditionals', name:'Conditionals',   emoji:'🔀'},
+    {id:'writing',      name:'Linking Phrases',emoji:'🔗'},
+  ],
+};
+
+// Per-user personal message text (mirrors PERSONAL_MSGS in index.html)
+const PERSONAL_PHRASES={
+  shlomo:'We are great friends',
+  shira: 'We will be very successful',
+  sara:  'We will get married',
+};
 
 // Persist the URL so you don't have to paste it every time
 (function loadSaved(){
@@ -151,6 +213,7 @@ function connect(){
   document.getElementById('refreshRow').style.display='block';
   document.getElementById('toggleRow').style.display='block';
   updateHistoryBtn();
+  updateLessonsBtn();
   if(autoTimer) clearInterval(autoTimer);
   autoTimer=setInterval(fetchData,30000);
 }
@@ -162,11 +225,25 @@ function toggleHistory(){
   render();
 }
 
+function toggleLessons(){
+  showLessons=!showLessons;
+  localStorage.setItem('su_dash_lessons',showLessons?'1':'0');
+  updateLessonsBtn();
+  render();
+}
+
 function updateHistoryBtn(){
   const btn=document.getElementById('historyBtn');
   if(!btn) return;
   btn.textContent=showHistory?'Hide login history & time used':'Show login history & time used';
   btn.classList.toggle('active',showHistory);
+}
+
+function updateLessonsBtn(){
+  const btn=document.getElementById('lessonsBtn');
+  if(!btn) return;
+  btn.textContent=showLessons?'Hide lessons completed':'Show lessons completed';
+  btn.classList.toggle('active',showLessons);
 }
 
 function setStatus(msg,cls){
@@ -216,12 +293,28 @@ function render(){
     }
     const maxDay=Math.max(...dayBars.map(d=>d.count),1);
 
+    // Personal message indicator: did this user open intermediate/verbs?
+    const personalEvts=evts.filter(e=>e.lid==='verbs'&&e.lvl==='intermediate');
+    const personalSeen=personalEvts.length>0;
+    const personalLastTs=personalSeen?personalEvts[personalEvts.length-1].t:null;
+    const personalQuiz=personalEvts.some(e=>e.e==='quiz');
+    const personalPhrase=PERSONAL_PHRASES[u.id]||'';
+
     return`<div class="user-card">
       <div class="user-hdr">
         <div class="user-avatar">${u.emoji}</div>
         <div>
           <div class="user-name">${u.name}</div>
           <div class="user-last">Last active: ${lastStr}</div>
+        </div>
+      </div>
+      <div class="personal-banner${personalSeen?' seen':''}">
+        <div class="personal-icon">${personalSeen?'💖':'⏳'}</div>
+        <div class="personal-text">
+          <b>"${personalPhrase}"</b>
+          ${personalSeen
+            ? `<div class="seen-msg">✓ Saw it ${personalEvts.length}× ${personalQuiz?'· finished quiz':''}</div><div class="meta">Last opened ${timeAgo(personalLastTs)}</div>`
+            : `<div class="miss-msg">Not seen yet</div><div class="meta">Open intermediate → Useful Phrases</div>`}
         </div>
       </div>
       <div class="stats-grid">
@@ -242,6 +335,7 @@ function render(){
           <div class="day-count">${d.count}</div>
         </div>`).join('')}
       </div>
+      ${showLessons?renderLessonsPanel(evts):''}
       ${showHistory?renderHistoryPanel(allUserEvts):''}
     </div>`;
   }).join('');
@@ -334,6 +428,50 @@ function fmtDuration(ms){
   const h=Math.floor(m/60);
   const rm=m%60;
   return rm?h+'h '+rm+'m':h+'h';
+}
+
+function renderLessonsPanel(evts){
+  // Aggregate lesson activity by id+level. Older events (before lid/lvl were
+  // tracked) won't have those fields and will be ignored here.
+  const tagged=evts.filter(e=>(e.e==='lesson'||e.e==='quiz')&&e.lid&&e.lvl);
+  const byKey={};
+  tagged.forEach(e=>{
+    const k=e.lvl+'|'+e.lid;
+    if(!byKey[k]) byKey[k]={starts:0,quizzes:0,last:0};
+    if(e.e==='lesson') byKey[k].starts++;
+    if(e.e==='quiz') byKey[k].quizzes++;
+    if(e.t>byKey[k].last) byKey[k].last=e.t;
+  });
+  const totalStarted=Object.keys(byKey).length;
+  const totalQuizzed=Object.values(byKey).filter(v=>v.quizzes>0).length;
+
+  const groups=Object.entries(LESSON_CATALOG).map(([level,lessons])=>{
+    const rows=lessons.map(l=>{
+      const k=level+'|'+l.id;
+      const d=byKey[k];
+      const cls='lesson-row-d'+(l.personal?' highlight':'')+(d&&d.quizzes>0?' done':'');
+      const counts=d
+        ? `<span>opened <b>${d.starts}</b></span><span>quiz <b class="${d.quizzes>0?'done':''}">${d.quizzes}</b></span>`
+        : `<span style="color:rgba(255,255,255,0.25)">not opened</span>`;
+      const star=l.personal?'<span class="star">💖</span>':'';
+      return `<div class="${cls}">
+        <div class="lesson-name">${star}${l.emoji} ${l.name}</div>
+        <div class="lesson-counts">${counts}</div>
+      </div>`;
+    }).join('');
+    const levelName={beginner:'Beginner',intermediate:'Intermediate',advanced:'Advanced'}[level];
+    return `<div class="lvl-group"><div class="lvl-group-hdr">${levelName}</div>${rows}</div>`;
+  }).join('');
+
+  const noteIfEmpty=tagged.length===0
+    ? '<div style="color:rgba(255,255,255,0.35);font-size:11px;margin-top:8px">No tagged lesson events yet. Older events (before this update) didn\'t record which lesson was opened — new opens from now on will show up here.</div>'
+    : '';
+
+  return `<div class="lessons-panel">
+    <div class="lessons-title"><span>LESSONS OPENED</span><span class="lessons-total">${totalStarted} opened · ${totalQuizzed} quizzed</span></div>
+    ${groups}
+    ${noteIfEmpty}
+  </div>`;
 }
 
 function renderHistoryPanel(evts){
